@@ -1,0 +1,1138 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Neucha:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+  
+
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Algorithm,Parameter Tuning," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="flary's blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="简介 如果你的预测建模表现的不尽人意，请使用XGBoost。 XGBoost算法已经成为许多数据科学家的终极武器。这是一个非常复杂的算法，足以处理各种不规则的数据。 XGBoost算法是梯度提升算法（GBM）的改进版，使用XGBoost构建模型非常简单。但是，使用XGBoost改善模型很困难，这个算法包含很多参数。因此要提升模型的效果，调参尤为关键。但是，要说哪组参数要怎么调节、为了得到最佳效果参">
+<meta name="keywords" content="Algorithm,Parameter Tuning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="XGBoost-参数调优">
+<meta property="og:url" content="http://yoursite.com/child/2017/05/XGBoost-参数调优.html">
+<meta property="og:site_name" content="flary&#39;s blog">
+<meta property="og:description" content="简介 如果你的预测建模表现的不尽人意，请使用XGBoost。 XGBoost算法已经成为许多数据科学家的终极武器。这是一个非常复杂的算法，足以处理各种不规则的数据。 XGBoost算法是梯度提升算法（GBM）的改进版，使用XGBoost构建模型非常简单。但是，使用XGBoost改善模型很困难，这个算法包含很多参数。因此要提升模型的效果，调参尤为关键。但是，要说哪组参数要怎么调节、为了得到最佳效果参">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-04-22T08:31:55.776Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="XGBoost-参数调优">
+<meta name="twitter:description" content="简介 如果你的预测建模表现的不尽人意，请使用XGBoost。 XGBoost算法已经成为许多数据科学家的终极武器。这是一个非常复杂的算法，足以处理各种不规则的数据。 XGBoost算法是梯度提升算法（GBM）的改进版，使用XGBoost构建模型非常简单。但是，使用XGBoost改善模型很困难，这个算法包含很多参数。因此要提升模型的效果，调参尤为关键。但是，要说哪组参数要怎么调节、为了得到最佳效果参">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"right","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/child/2017/05/XGBoost-参数调优.html"/>
+
+
+
+
+
+  <title> XGBoost-参数调优 | flary's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?209ead5acf7ef7ede1674e500c4430d5";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta custom-logo">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">flary's blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <h1 class="site-subtitle" itemprop="description">flary的个人博客</h1>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="search.placeholder" spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/child/2017/05/XGBoost-参数调优.html">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="flary">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="flary's blog">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="flary's blog" src="/images/avatar.jpg">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+            
+            
+              
+                XGBoost-参数调优
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-05-22T11:14:53+08:00">
+                2017-05-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-Learning/" itemprop="url" rel="index">
+                    <span itemprop="name">Machine Learning</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+         
+		<span class="post-time">
+	   &nbsp; | &nbsp;
+           <span class="post-meta-item-icon">
+             <i class="fa fa-file-word-o" aria-hidden="true"></i>
+           </span>
+           <span class="post-meta-item-text">字数统计:</span>
+           <span class="post-count">2,871 字</span>
+           
+         </span>
+	  
+      <span class="post-time">
+	   &nbsp; | &nbsp;
+           <span class="post-meta-item-icon">
+             <i class="fa fa-clock-o" aria-hidden="true"></i>
+           </span>
+           <span class="post-meta-item-text">阅读时长:</span>
+           <span class="post-count">10 分钟</span>
+           
+         </span>
+         </span>
+          
+
+		 
+		 
+          
+ 
+        
+
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><hr>
+<p>如果你的预测建模表现的不尽人意，请使用XGBoost。 XGBoost算法已经成为许多数据科学家的终极武器。这是一个非常复杂的算法，足以处理各种不规则的数据。</p>
+<p>XGBoost算法是梯度提升算法（GBM）的改进版，使用XGBoost构建模型非常简单。但是，使用XGBoost改善模型很困难，这个算法包含很多参数。因此要提升模型的效果，调参尤为关键。但是，要说哪组参数要怎么调节、为了得到最佳效果参数应该设为多少，诸如此类的问题，也是很难给出统一答案的。</p>
+<h2 id="XGBoost算法的优点"><a href="#XGBoost算法的优点" class="headerlink" title="XGBoost算法的优点"></a>XGBoost算法的优点</h2><hr>
+<ul>
+<li><p><strong>正则化</strong><br>标准的GBM算法并没有正则项，正则项可以有效防止模型过拟合。<br>XGBoost也是以“正则化提升”技术而闻名。</p>
+</li>
+<li><p><strong>并行计算</strong><br>相比于GBM，XGBoost实现了并行处理，并且速度更快。<br>但众所周知，boosting不是一种串行的结构吗?怎么并行的？注意XGBoost的并行不是tree粒度的并行，XGBoost也是一次迭代完才能进行下一次迭代的（第t次迭代的代价函数里包含了前面t-1次迭代的预测值）。XGBoost的并行是在特征粒度上的。我们知道，决策树的学习最耗时的一个步骤就是对特征的值进行排序（因为要确定最佳分割点），xgboost在训练之前，预先对数据进行了排序，然后保存为block结构，后面的迭代中重复地使用这个结构，大大减小计算量。这个block结构也使得并行成为了可能，在进行节点的分裂时，需要计算每个特征的增益，最终选增益最大的那个特征去做分裂，那么各个特征的增益计算就可以开多线程进行。<br>XGBoost支持hadoop实现。</p>
+</li>
+<li><p><strong>高灵活性</strong><br>算法支持自定义目标函数形式和评价标准。<br>这为模型增加了全新的维度，所以我们的处理不会受到任何限制。</p>
+</li>
+<li><p><strong>处理缺失值</strong><br>XGBoost有一个内置的常规处理缺失值的方法<br>用户需要提供与其他样本不同的值，并将其作为参数传递。XGBoost在不同节点遇到缺失值时采用不同的处理方法，并且会学习未来遇到缺失值时的处理方法。</p>
+</li>
+<li><p><strong>树剪枝</strong><br>对于GBM，当节点在分裂时产生负loss，就会停止分裂。因此，它更像是一种贪婪算法。<br>XGBoost不同，它会先分裂到树的深度为“max_depth”（参数指定），然后回过头来剪枝，如果某个节点之后不再有正值，它会去除这个分裂。<br>另一个优点在于，假设GBM发现分裂产生负loss，如-2，可能接下来继续分列会产生+10的loss，这样的话因为负loss，GBM会提前停止分列，但XGBoost会继续分列，从而会发现-2和+10组合后还有+8的loss，因此两次分列都会保留。</p>
+</li>
+<li><p><strong>内置交叉验证</strong><br>XGBoost可以在每一轮boosting迭代的时候使用交叉验证。因此，可以方便获得最优boosting迭代的次数。<br>而GBM使用网格搜索，只能检测有限个值。</p>
+</li>
+<li><p><strong>在已有的模型基础上继续</strong><br>XGBoost可以在上一轮的结果上继续训练，这个特征在某些应用上是一个很大的优势。<br>sklearn中的GBM的实现也有这个功能，两种算法在这一点上是一致的。</p>
+</li>
+</ul>
+<h2 id="XGBoost参数"><a href="#XGBoost参数" class="headerlink" title="XGBoost参数"></a>XGBoost参数</h2><hr>
+<ul>
+<li><strong>通用参数</strong><br><strong>booster [默认=gbtree]：</strong><br>$\quad$ 选择每次迭代的基模型：gbtree(树模型)(通常用)、gbliner(线性模型)。<br><strong>silent [默认=0]：</strong><br>$\quad$ 设为1时，静态模式开启，不会有任何输出信息。<br>$\quad$ 所以一般都选择默认0，有助于通过输出信息理解模型。<br><strong>nthread [默认系统最大线程数]：</strong><br>$\quad$ 这个参数用来进行多线程控制，应当输入系统的核数。<br>$\quad$ 如果希望使用CPU全部的核，那就不要输入这个参数，算法会自动检测它。</li>
+</ul>
+<hr>
+<ul>
+<li><strong>booster参数（ 尽管有两种booster可供选择，我这里只介绍tree booster，因为它的表现远远胜过linear booster，所以linear booster很少用到）</strong><br><strong>eta [默认=0.3]：</strong><br>$\quad$ 和GBM的学习率(learing rate)类似。<br>$\quad$ 通过减少每一步的权重，可以提高模型的鲁棒性。<br>$\quad$ 典型取值0.01~0.2。<br><strong>min_child_weight [默认=1]：</strong><br>$\quad$ 决定叶子节点样本权重之和的最小值。<br>$\quad$  和GBM的min_child_leaf类似，但不完全一致，XGBoost是最小样本权重和，GBM是最小样本数。<br>$\quad$ 控制模型过拟合，太大的值会阻碍模型学习局部样本之间的关系。<br>$\quad$ 因此值太大会导致欠拟合，需要通过交叉验证来学习。<br><strong>max_depth [默认=6]：</strong><br>$\quad$ 树的最大深度，和GBM一样。<br>$\quad$ 控制模型过拟合。值过大，会过度学习。<br>$\quad$ 需要通过交叉验证来学习。<br>$\quad$ 一般取值3~10。<br><strong>max_leaf_nodes：</strong><br>$\quad$ 树上最大叶子的数量。<br>$\quad$ 可以替代max_depth的作用。因为如果生成的是二叉树，一个深度为n的树最多生成n2个叶子。<br>$\quad$ 如果定义了这个参数，GBM会忽略max_depth参数。<br><strong>gamma[默认=0]：</strong><br>$\quad$ 在节点分裂时，只有分裂后损失函数的值下降了，才会分裂这个节点。Gamma指定了节点分裂所需的最小损失函数下降值。<br>$\quad$ 这个参数的值越大，算法越保守。这个参数的值和损失函数息息相关，所以是需要调参的。<br><strong>max_delta_step[默认=0]：</strong><br>$\quad$ 这参数限制每棵树权重改变的最大步长。如果这个参数的值为0，那就意味着没有约束。如果它被赋予了某个正值，那么它会让这个算法更加保守。<br>$\quad$ 通常，这个参数不需要设置。但是当各类别的样本十分不平衡时，它对逻辑回归是很有帮助的。<br>$\quad$ 这个参数一般用不到，但是你可以挖掘出来它更多的用处。<br><strong>subsample[默认=1]：</strong><br>$\quad$ 和GBM中的subsample参数一模一样。这个参数控制对于每棵树，随机采样的比例。<br>$\quad$ 减小这个参数的值，算法会更加保守，避免过拟合。但是，如果这个值设置得过小，它可能会导致欠拟合。<br>$\quad$ 典型值：0.5-1<br><strong>colsample_bytree[默认=1]：</strong><br>$\quad$ 和GBM里面的max_features参数类似。用来控制每棵树随机采样的列数的占比(每一列是一个特征)。<br>$\quad$ 典型值：0.5-1<br><strong>colsample_bylevel[默认=1]：</strong><br>$\quad$ 用来控制树的每一级的每一次分裂，对列数的采样的占比。<br>$\quad$ 一般不太用这个参数，因为subsample参数和colsample_bytree参数可以起到相同的作用。但是如果感兴趣，可以挖掘这个参数更多的用处。<br><strong>lambda[默认=1]：</strong><br>$\quad$ 权重的L2正则化项。(和Ridge regression类似)。<br>$\quad$ 这个参数是用来控制XGBoost的正则化部分的。虽然大部分数据科学家很少用到这个参数，但是这个参数在减少过拟合上还是可以挖掘出更多用处的。<br><strong>alpha[默认=1]：</strong><br>$\quad$ 权重的L1正则化项。(和Lasso regression类似)。<br>$\quad$ 可以应用在很高维度的情况下，使得算法的速度更快。<br><strong>scale_pos_weight[默认=1]：</strong><br>$\quad$ 在各类别样本十分不平衡时，把这个参数设定为一个正值，可以使算法更快收敛。</li>
+</ul>
+<hr>
+<ul>
+<li><p><strong>学习目标参数</strong><br><strong>objective[默认=reg:linear]：</strong><br>$\quad$ binary:logistic，二分类的逻辑回归，返回预测的概率(不是类别)。<br>$\quad$ multi:softmax，使用softmax的多分类器，返回预测的类别(不是概率)。 在这种情况下，你还需要多设一个参数：num_class(类别数目)。<br>$\quad$ multi:softpro，和multi:softmax参数一样，但是返回的是每个数据属于各个类别的概率。<br><strong>eval_metric[默认值取决于objective参数的取值]：</strong><br>$\quad$ 对于有效数据的度量方法。<br>$\quad$ 对于回归问题，默认值是rmse，对于分类问题，默认值是error。<br>$\quad$ 典型值有： </p>
+<ul>
+<li>rmse：均方根误差</li>
+<li>mae：平均绝对误差</li>
+<li>logloss：负对数似然函数值</li>
+<li>error：二分类错误率(阈值为0.5)</li>
+<li>merror：多分类错误率</li>
+<li>mlogloss：多分类logloss损失函数</li>
+<li>auc：曲线下面积</li>
+</ul>
+<p><strong>seed[默认=0]：</strong><br>$\quad$ 随机数的种子。<br>$\quad$ 设置它可以复现随机数据的结果，也可以用于调整参数。</p>
+</li>
+</ul>
+<hr>
+<ul>
+<li><p><strong>注意</strong>：<br>如果你之前用的是Scikit-learn，你可能不太熟悉这些参数。但是有个好消息，Python的XGBoost模块有一个sklearn包-XGBClassifier。这个包中的参数是按sklearn风格命名的，会改变的函数名:</p>
+<ul>
+<li>eta -&gt; learning_rate </li>
+<li>lambda -&gt; reg_lambda </li>
+<li>alpha -&gt; reg_alpha</li>
+</ul>
+<p>你肯定在疑惑为啥咱们没有介绍和GBM中的n_estimators类似的参数。XGBClassifier中确实有一个类似的参数，但在标准XGBoost实现调用拟合函数时，把它作为num_boosting_rounds参数传入。</p>
+</li>
+</ul>
+<h2 id="参数调优的一般方法"><a href="#参数调优的一般方法" class="headerlink" title="参数调优的一般方法"></a>参数调优的一般方法</h2><p>使用和GBM中相似的方法。需要进行如下步骤：</p>
+<ul>
+<li>选择较高的学习速率(learning_rate)。一般情况下，学习速率的值为0.1。但是，对于不同的问题，理想的学习速率有时候会在0.05到0.3之间波动。选择对应于此学习速率的理想决策树数量。XGBoost有一个很有用的函数“cv”，这个函数可以在每一次迭代中使用交叉验证，并返回理想的决策树数量。</li>
+<li>对于给定的学习速率和决策树数量，进行决策树特定参数调优(max_depth,min_child_weight, gamma,subsample,colsample_bytree)。在确定一棵树的过程中，我们可以选择不同的参数。</li>
+<li>xgboost的正则化参数的调优(lambda,alpha)。这些参数可以降低模型的复杂度，从而提高模型的表现。</li>
+<li>降低学习速率learning_rate，确定理想参数。</li>
+</ul>
+<p><strong>第一步：</strong>确定学习速率和tree_based参数调优的决策树数量：</p>
+<ul>
+<li>其他参数初始化：<pre><code> 1. max_depth = 5：这个参数的取值最好在3-10之间。我选的起始值为5，但是你  也可以选择其它的值。起始值在4-6之间都是不错的选择。
+ 2. min_child_weight = 1：在这里选了一个比较小的值，因为这是一个极不平衡的分类问题。因此，某些叶子节点下的值会比较小。
+ 3. gamma = 0： 起始值也可以选其它比较小的值，在0.1到0.2之间就可以。这个参数后继也是要调整的。
+ 4. subsample, colsample_bytree = 0.8：这个是最常见的初始值了。典型值的范围在0.5-0.9之间。
+ 5. scale_pos_weight = 1：这个值是因为类别十分不平衡。 
+ 6. 这里把学习速率就设成默认的0.1。然后用xgboost中的cv函数来确定最佳的决策树数量。
+</code></pre></li>
+</ul>
+<p><strong>第二步：</strong> max_depth 和 min_child_weight 参数调优<br><strong>第三步：</strong>gamma参数调优<br><strong>第四步：</strong>subsample 和 colsample_bytree调优<br><strong>第五步：</strong>正则化参数调优<br><strong>第六步：</strong>降低学习速率，使用更多的决策树</p>
+<hr>
+<p><strong>参考文献：</strong><br><a href="https://www.analyticsvidhya.com/blog/2016/03/complete-guide-parameter-tuning-xgboost-with-codes-python/" target="_blank" rel="noopener">https://www.analyticsvidhya.com/blog/2016/03/complete-guide-parameter-tuning-xgboost-with-codes-python/</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+  
+        <div class="post-tags">
+          
+            <a href="/tags/Algorithm/" rel="tag"># Algorithm</a>
+          
+            <a href="/tags/Parameter-Tuning/" rel="tag"># Parameter Tuning</a>
+          
+        </div>
+      
+  <div>
+    
+      
+
+
+     <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+     <div style="text-align:center;font-size:14px;font-weight:blod"><i class="fa fa-copyright"></i>友情提示: 转载请保留原文链接及作者。</div>
+<br/>
+
+    
+  </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感谢支持、勇于创作</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赞赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/wechat-reward-img.jpg" alt="flary WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/alipay-reward-img.jpg" alt="flary Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+         
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/模型偏差与方差.html" rel="next" title="模型偏差与方差">
+                <i class="fa fa-chevron-left"></i> 模型偏差与方差
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/08/深度学习的基础-从人工神经网络开始.html" rel="prev" title="深度学习基础 - 从人工神经网络开始">
+                深度学习基础 - 从人工神经网络开始 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMjkxNS85NDc2"></div>
+    
+	
+  </div>
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="flary" />
+          <p class="site-author-name" itemprop="name">flary</p>
+          <p class="site-description motion-element" itemprop="description">记录学习、记录成长</p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/flarywu" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://weibo.com/flarygogo" target="_blank" title="weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/flary-53/activities" target="_blank" title="zhihu">
+                  
+                    <i class="fa fa-fw fa-battery-3"></i>
+                  
+                  zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#XGBoost算法的优点"><span class="nav-number">2.</span> <span class="nav-text">XGBoost算法的优点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#XGBoost参数"><span class="nav-number">3.</span> <span class="nav-text">XGBoost参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参数调优的一般方法"><span class="nav-number">4.</span> <span class="nav-text">参数调优的一般方法</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-tint"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">flary</span>
+</div>
+ <!--以下3行为一条竖线和Coding Page-->
+  <div class="powered-by">  
+  <span>Hosted by <a href="https://pages.coding.me" style="font-weight: bold">Coding Pages</a></span>
+  </div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io" rel="external nofollow">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next" rel="external nofollow">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.1.3/jquery.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid="></script>
+      <!-- UY END -->
+  
+
+
+
+
+   
+     
+   
+  
+       <!-- UY BEGIN -->
+       <script type="text/javascript">
+          (function(d, s) {
+              var j, e = d.getElementsByTagName(s)[0];
+              if (typeof LivereTower === 'function') { return; }
+              j = d.createElement(s);
+              j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+              j.async = true;
+              e.parentNode.insertBefore(j, e);
+          })(document, 'script');
+       </script>
+       <noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+       <!-- UY END -->
+   
+ 
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+
+</body>
+</html>

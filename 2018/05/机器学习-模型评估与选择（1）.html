@@ -1,0 +1,1175 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Neucha:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+  
+
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Model selection," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="flary's blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="前沿经小组协商，打算分工全方面、系统地学习机器学习的知识点。通过理论结合实践，从而达到对机器学习的本质有更加深入的了解，本篇博文参考《机器学习》西瓜书和李航老师的《统计学方法》，主要关于机器学习之模型评估与评估的一部分知识，后续更进补充。  统计学习三要素统计学习(statistical learning) 是关于计算机基于数据构建概率统计模型并运用模型对数据进行预测与分析的一门学科，亦称为统计机">
+<meta name="keywords" content="Model selection">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器学习-模型评估与选择（1）">
+<meta property="og:url" content="http://yoursite.com/child/2018/05/机器学习-模型评估与选择（1）.html">
+<meta property="og:site_name" content="flary&#39;s blog">
+<meta property="og:description" content="前沿经小组协商，打算分工全方面、系统地学习机器学习的知识点。通过理论结合实践，从而达到对机器学习的本质有更加深入的了解，本篇博文参考《机器学习》西瓜书和李航老师的《统计学方法》，主要关于机器学习之模型评估与评估的一部分知识，后续更进补充。  统计学习三要素统计学习(statistical learning) 是关于计算机基于数据构建概率统计模型并运用模型对数据进行预测与分析的一门学科，亦称为统计机">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/img/model-selection/roc.png">
+<meta property="og:updated_time" content="2018-05-06T09:04:48.755Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="机器学习-模型评估与选择（1）">
+<meta name="twitter:description" content="前沿经小组协商，打算分工全方面、系统地学习机器学习的知识点。通过理论结合实践，从而达到对机器学习的本质有更加深入的了解，本篇博文参考《机器学习》西瓜书和李航老师的《统计学方法》，主要关于机器学习之模型评估与评估的一部分知识，后续更进补充。  统计学习三要素统计学习(statistical learning) 是关于计算机基于数据构建概率统计模型并运用模型对数据进行预测与分析的一门学科，亦称为统计机">
+<meta name="twitter:image" content="http://yoursite.com/img/model-selection/roc.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"right","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/child/2018/05/机器学习-模型评估与选择（1）.html"/>
+
+
+
+
+
+  <title> 机器学习-模型评估与选择（1） | flary's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?209ead5acf7ef7ede1674e500c4430d5";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta custom-logo">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">flary's blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <h1 class="site-subtitle" itemprop="description">flary的个人博客</h1>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="search.placeholder" spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/child/2018/05/机器学习-模型评估与选择（1）.html">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="flary">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="flary's blog">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="flary's blog" src="/images/avatar.jpg">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+            
+            
+              
+                机器学习-模型评估与选择（1）
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-06T15:51:02+08:00">
+                2018-05-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-Learning/" itemprop="url" rel="index">
+                    <span itemprop="name">Machine Learning</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+         
+		<span class="post-time">
+	   &nbsp; | &nbsp;
+           <span class="post-meta-item-icon">
+             <i class="fa fa-file-word-o" aria-hidden="true"></i>
+           </span>
+           <span class="post-meta-item-text">字数统计:</span>
+           <span class="post-count">4,697 字</span>
+           
+         </span>
+	  
+      <span class="post-time">
+	   &nbsp; | &nbsp;
+           <span class="post-meta-item-icon">
+             <i class="fa fa-clock-o" aria-hidden="true"></i>
+           </span>
+           <span class="post-meta-item-text">阅读时长:</span>
+           <span class="post-count">18 分钟</span>
+           
+         </span>
+         </span>
+          
+
+		 
+		 
+          
+ 
+        
+
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前沿"><a href="#前沿" class="headerlink" title="前沿"></a>前沿</h2><p>经小组协商，打算分工全方面、系统地学习机器学习的知识点。通过理论结合实践，从而达到对机器学习的本质有更加深入的了解，本篇博文参考《机器学习》西瓜书和李航老师的《统计学方法》，主要关于机器学习之模型评估与评估的一部分知识，后续更进补充。</p>
+<hr>
+<h2 id="统计学习三要素"><a href="#统计学习三要素" class="headerlink" title="统计学习三要素"></a>统计学习三要素</h2><p><strong>统计学习(statistical learning) </strong>是关于计算机基于数据构建概率统计模型并运用模型对数据进行预测与分析的一门学科，亦称为<strong>统计机器学习(statistical machine learning)</strong>。统计学习包括监督学习、非监督学习、半监督学习以及强化学习。统计学习方法都是由模型、策略、算法构成的，即统计学习的三要素，可以表示为：</p>
+<blockquote>
+<p><code>方法 = 模型 + 策略 + 算法</code></p>
+</blockquote>
+<ul>
+<li>模型：指所要学习的条件概率分布或者决策函数，模型的假设空间包含所有可能的条件概率分布或决策函数。决策函数表示的模型为<strong>非概率模型</strong>，条件概率表示的模型为<strong>概率模型</strong>。</li>
+<li>策略：有了模型的假设空间，策略就是要考虑按照什么样的准则学习或者选择最优的模型。</li>
+</ul>
+<blockquote>
+<p><strong>损失函数(loss function)</strong>或者<strong>代价函数(cost function)</strong>度量模型预测的好坏，<strong>风险函数(risk function)</strong>或者<strong>期望损失(expected loss)</strong>度量平均意义下模型预测的好坏，学习的目标就是选择期望风险最小的模型。模型关于训练数据集的平均损失称为<strong>经验风险(empirical risk)</strong>或者<strong>经验损失(empirical loss)</strong>，当样本容量N趋于无穷时，经验风险趋近于期望风险，所以很自然的想法是用经验风险估计期望风险。但是往往现实当中样本数目有限，<strong>经验风险最小化(empirical risk minimization，ERM)</strong>学习的效果就未必很好，会产生“过拟合(over-fitting)“现象，由此引出<strong>结构风险最小化(structural risk minimization，SRM)</strong>的策略，结构风险最小化等价于正则化(regularization)，结构风险小需要经验风险与模型复杂度同时小，结构风险小的模型往往对训练数据以及未知的预测数据都有较好的预测。经验风险函数或者结构风险函数就是最优化的目标函数。</p>
+</blockquote>
+<ul>
+<li>算法：从假设空间中选择最优模型，最后需要考虑的是用什么样的计算方法求解最优模型，而算法就指的是学习模型的具体计算方法。</li>
+</ul>
+<blockquote>
+<p>这时，统计学习的问题归结为最优化问题。如果最优化问题有显示的解析解，这个最优化问题就比较简单。但通常解析解不存在，这就需要用数值计算的方法求解。如何保证找到全局最优解，并使得求解过程非常高效，就成为一个重要问题。</p>
+</blockquote>
+<hr>
+<h2 id="模型评估与选择"><a href="#模型评估与选择" class="headerlink" title="模型评估与选择"></a>模型评估与选择</h2><h3 id="经验误差与过拟合"><a href="#经验误差与过拟合" class="headerlink" title="经验误差与过拟合"></a>经验误差与过拟合</h3><p>统计学习的目的是使学到的模型不仅对已知数据而且对未知数据都能有很好的预测能力。不同的学习方法会给出不同的模型，当损失函数给定时，基于损失函数的模型的训练误差和模型的测试误差就自然成为学习方法的评估标准。模型在训练集上的误差称为<strong>训练误差</strong>或者<strong>经验误差</strong>，在新样本上的误差称为<strong>测试误差</strong>或者<strong>泛化误差</strong>。显然，我们希望得到泛化误差小的学习器。</p>
+<blockquote>
+<p>我们事先不知道新样本是什么样，实际能做的就是努力使经验误差最小化，为了达到这个目的，应该从训练样本中尽可能学出适用于所有潜在样本的”普遍规律”。在很多情况下，我们确实可以学得一个在训练集上表现很好的学习器，精度甚至可以达到100%，遗憾的是，这样的学习器在大多数情况下都不好。</p>
+</blockquote>
+<p>当模型把训练样本学得”太好”的时候，很可能已经把训练样本本身的一些特点当做了所有潜在样本都会具有的一般性质，这样就会导致泛化性能下降，这种现象成为<strong>过拟合</strong>。</p>
+<p><strong>过拟合</strong>：也可以理解为在学习时选择的模型包含的参数过多，以致于出现对已知的数据预测得很好，但对未知数据预测得很差的现象。</p>
+<h3 id="评估方法"><a href="#评估方法" class="headerlink" title="评估方法"></a>评估方法</h3><p>通常，我们可以通过实验测试来对模型的泛化误差进行评估，进而做出选择。为此，需要一个”测试集”来测试模型对新样本的判别能力，然后以测试集上的测试误差作为泛化误差的近似。<br>通常我们假设测试样本也是从样本真实分布中独立同分布采样得到，但测试集应该尽可能与训练集互斥。一个只有m个样本的数据集D，既要训练，又要测试，那就要对D进行适当的划分处理，下面介绍几种方法：</p>
+<h4 id="留出法-hold-out"><a href="#留出法-hold-out" class="headerlink" title="留出法(hold-out)"></a>留出法(hold-out)</h4><p>直接将数据集D划分为两个互斥的集合，其中一个作为训练集S，另一个作为测试集T。在S上训练模型后，用T来评估测试误差，作为对泛化误差的估计。需要注意的三点：</p>
+<ul>
+<li>训练/测试集的划分要尽可能保持数据分布的一致性，例如在分类问题中至少要保持样本的类别比例相似（分层采样）。</li>
+<li>即使给出划分比例，划分的结果也有多种，一般要采用若干次随机划分、重复进行实验评估后取平均值。</li>
+<li>测试集小的话，评估结果的方差较大；训练集小的话，评估结果的偏差较大。所以通常将大约2/3~4/5的样本用于训练，剩余样本用于测试。</li>
+</ul>
+<h4 id="交叉验证法-cross-validation"><a href="#交叉验证法-cross-validation" class="headerlink" title="交叉验证法(cross validation)"></a>交叉验证法(cross validation)</h4><p>将数据集D划分为k个大小相似的互斥子集，每个子集尽可能保持数据分布一致性（分层采样）。每次用k-1个子集的并集作为训练集，余下的那个子集作为测试集，从而可以用k组训练/测试集分别进行训练和测试，得到k个测试结果的均值，该过程称为<strong>k折交叉验证(k-fold cross validation)</strong>。k通常取值为10，即10折交叉验证。</p>
+<ul>
+<li>同样，为避免划分不同引入的差别，k折交叉验证通常也要随机使用不同的划分重复p次，最终的评估结果是p次k折交叉验证结果的均值。</li>
+<li>特例，<strong>留一法(leave one out，LOO)</strong>：测试集只包含一个样本，优点是偏差小，评估结果往往被认为比较准确，缺点是模型过多，计算开销太大。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># k折交叉验证</span></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> KFold</span><br><span class="line">X = np.array([[<span class="number">0.</span>, <span class="number">0.</span>], [<span class="number">1.</span>, <span class="number">1.</span>], [<span class="number">-1.</span>, <span class="number">-1.</span>], [<span class="number">2.</span>, <span class="number">2.</span>]])</span><br><span class="line">y = np.array([<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>])</span><br><span class="line">X_train, X_test, y_train, y_test = X[train], X[test], y[train], y[test]</span><br><span class="line">kf = KFold(n_splits=<span class="number">2</span>)    <span class="comment"># k = 2</span></span><br><span class="line"><span class="keyword">for</span> train, test <span class="keyword">in</span> kf.split(X):</span><br><span class="line">    print(<span class="string">"%s %s"</span> % (train, test))</span><br><span class="line">    X_train, X_test, y_train, y_test = X[train], X[test], y[train], y[test]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>out:</span><br><span class="line">[<span class="number">2</span> <span class="number">3</span>] [<span class="number">0</span> <span class="number">1</span>]</span><br><span class="line">[<span class="number">0</span> <span class="number">1</span>] [<span class="number">2</span> <span class="number">3</span>]</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 留一法</span></span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> LeaveOneOut</span><br><span class="line">X = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]</span><br><span class="line">loo = LeaveOneOut()</span><br><span class="line"><span class="keyword">for</span> train, test <span class="keyword">in</span> loo.split(X):</span><br><span class="line">    print(<span class="string">"%s %s"</span> % (train, test))</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>out:</span><br><span class="line">[<span class="number">1</span> <span class="number">2</span> <span class="number">3</span>] [<span class="number">0</span>]</span><br><span class="line">[<span class="number">0</span> <span class="number">2</span> <span class="number">3</span>] [<span class="number">1</span>]</span><br><span class="line">[<span class="number">0</span> <span class="number">1</span> <span class="number">3</span>] [<span class="number">2</span>]</span><br><span class="line">[<span class="number">0</span> <span class="number">1</span> <span class="number">2</span>] [<span class="number">3</span>]</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#分层k折交叉验证</span></span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> StratifiedKFold</span><br><span class="line">X = np.ones(<span class="number">10</span>)</span><br><span class="line">y = [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>]</span><br><span class="line">skf = StratifiedKFold(n_splits=<span class="number">3</span>)    <span class="comment"># k = 3</span></span><br><span class="line"><span class="keyword">for</span> train, test <span class="keyword">in</span> skf.split(X, y):</span><br><span class="line">    print(<span class="string">"%s %s"</span> % (train, test))</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>out:</span><br><span class="line">[<span class="number">2</span> <span class="number">3</span> <span class="number">6</span> <span class="number">7</span> <span class="number">8</span> <span class="number">9</span>] [<span class="number">0</span> <span class="number">1</span> <span class="number">4</span> <span class="number">5</span>]</span><br><span class="line">[<span class="number">0</span> <span class="number">1</span> <span class="number">3</span> <span class="number">4</span> <span class="number">5</span> <span class="number">8</span> <span class="number">9</span>] [<span class="number">2</span> <span class="number">6</span> <span class="number">7</span>]</span><br><span class="line">[<span class="number">0</span> <span class="number">1</span> <span class="number">2</span> <span class="number">4</span> <span class="number">5</span> <span class="number">6</span> <span class="number">7</span>] [<span class="number">3</span> <span class="number">8</span> <span class="number">9</span>]</span><br></pre></td></tr></table></figure>
+<h4 id="自助法-bootstrapping"><a href="#自助法-bootstrapping" class="headerlink" title="自助法(bootstrapping)"></a>自助法(bootstrapping)</h4><p>在留出法和交叉验证法中，都保留了一部分样本用于测试，这必然会引入因训练规模不同而导致的偏差，自助法可以避免这个问题。</p>
+<p>自助法以自助采样为基础。给定包含m个样本的数据集D，每次从D中挑选一个样本，将其拷贝放入D’中，然后放回D，使得该样本下次还有被挑中的可能；重复该过程m次，我们就得到了m个样本的数据集D’。显然D中有一部分样本会在D’中多次出现，而另一部分样本不会出现。统计可知，初始数据集D中约有36.8%的样本未出现在D’中。D’当作训练集（m个样本），D/D’用作测试集。</p>
+<ul>
+<li>在数据集较小、难以有效划分训练/测试集时，自助法很有用。</li>
+<li>自助法可以通过多次采样产生多个不同的训练集，一般用于集成学习。</li>
+<li>自助法产生的数据集改变了初始数据集的分布，这会引入偏差，因此，数据量大时，一般使用留出法和交叉验证法。</li>
+</ul>
+<h4 id="调参与最终模型"><a href="#调参与最终模型" class="headerlink" title="调参与最终模型"></a>调参与最终模型</h4><p>大多数学习算法都有参数(parameter)需要设定，在模型评估与选择时候，除了要对算法进行选择，还要对算法参数进行设定，即为”调参(parameter tunning)”。</p>
+<ul>
+<li>学习算法的参数在实数范围内取值的，选参通常是对每个参数选定一个范围和变化步长，如在[0，0.2]区间内以0.05为步长，则候选参数为5个。</li>
+<li>在模型选择完成后，学习算法和参数就已经选定了，此时应该用全量数据集重新训练一遍模型，这才是最终的模型。</li>
+<li>通常把模型在实际应用中遇到的数据称为测试数据，而模型评估与选择中用于评估测试的数据集称为”验证集(validation set)”。即，测试集上的效果判别模型的泛化能力，训练数据划分为训练集和验证集，基于验证集上的效果来进行模型选择和调参。</li>
+</ul>
+<h3 id="性能评估"><a href="#性能评估" class="headerlink" title="性能评估"></a>性能评估</h3><p>对模型的评估，不仅需要有效的估计方法，还需要有衡量模型泛化能力的指标，这就是<strong>性能度量(performance measure)</strong>。</p>
+<h4 id="回归预测常用的性能度量"><a href="#回归预测常用的性能度量" class="headerlink" title="回归预测常用的性能度量"></a>回归预测常用的性能度量</h4><ul>
+<li><p>均方误差(mean squared error)</p>
+<script type="math/tex; mode=display">MSE(y, \hat{y}) = \frac{1}{n_{sample}}\sum_{i=0}^{n_{sample}-1}(y_i - \hat{y}_i)^2</script><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> mean_squared_error</span><br><span class="line">y_true = [<span class="number">3</span>, <span class="number">-0.5</span>, <span class="number">2</span>, <span class="number">7</span>]</span><br><span class="line">y_pred = [<span class="number">2.5</span>, <span class="number">0.0</span>, <span class="number">2</span>, <span class="number">8</span>]</span><br><span class="line">mean_squared_error(y_true, y_pred)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>out:</span><br><span class="line"><span class="number">0.375</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>平均绝对误差(mean absolute error)</p>
+<script type="math/tex; mode=display">MAE(y, \hat{y}) = \frac{1}{n_{sample}}\sum_{i=0}^{n_{sample}-1}|y_i - \hat{y}_i|</script><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> mean_absolute_error</span><br><span class="line">y_true = [<span class="number">3</span>, <span class="number">-0.5</span>, <span class="number">2</span>, <span class="number">7</span>]</span><br><span class="line">y_pred = [<span class="number">2.5</span>, <span class="number">0.0</span>, <span class="number">2</span>, <span class="number">8</span>]</span><br><span class="line">mean_absolute_error(y_true, y_pred)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>out:</span><br><span class="line"><span class="number">0.5</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>解释方差得分(explained variance score)</p>
+<script type="math/tex; mode=display">explained-variance(y, \hat{y}) = 1-\frac{Var(y-\hat{y})}{Var(y)}</script><p>其中，Var是方差，最好的得分是 1，值越低越差。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> explained_variance_score</span><br><span class="line">y_true = [<span class="number">3</span>, <span class="number">-0.5</span>, <span class="number">2</span>, <span class="number">7</span>]</span><br><span class="line">y_pred = [<span class="number">2.5</span>, <span class="number">0.0</span>, <span class="number">2</span>, <span class="number">8</span>]</span><br><span class="line">explained_variance_score(y_true, y_pred)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>out:</span><br><span class="line"><span class="number">0.95717344753747324</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>可决系数(R2 score)</p>
+<script type="math/tex; mode=display">R^2(y, \hat{y}) = 1-\frac{\sum_{i=0}^{n_{sample}-1}(y_i - \hat{y}_i)^2}{\sum_{i=0}^{n_{sample}-1}(y_i - \bar{y})^2}</script><p>其中，</p>
+<script type="math/tex; mode=display">\bar{y} =  \frac{1}{n_{sample}}\sum_{i=0}^{n_{sample}-1}y_i</script><p>它提供了将来样本如何可能被模型预测的估量。最佳分数为1，可以为负数（因为模型可能会更糟）。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> r2_score</span><br><span class="line">y_true = [<span class="number">3</span>, <span class="number">-0.5</span>, <span class="number">2</span>, <span class="number">7</span>]</span><br><span class="line">y_pred = [<span class="number">2.5</span>, <span class="number">0.0</span>, <span class="number">2</span>, <span class="number">8</span>]</span><br><span class="line">r2_score(y_true, y_pred)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>out:</span><br><span class="line"><span class="number">0.94860813704496794</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="分类问题常用的性能度量"><a href="#分类问题常用的性能度量" class="headerlink" title="分类问题常用的性能度量"></a>分类问题常用的性能度量</h4><ul>
+<li><p>错误率与精度<br>错误率是分类错误的样本数占总数的比例，精度则是分类正确的样本占总数的比例，即为：</p>
+<script type="math/tex; mode=display">acc(y, \hat{y}) = \frac{1}{n_{sample}}\sum_{i=0}^{n_{sample}-1}1(y_i = \hat{y}_i)</script><p>其中，$1(x)$是0-1指示函数。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> accuracy_score</span><br><span class="line">accuracy_score(np.array([[<span class="number">0</span>, <span class="number">1</span>], [<span class="number">1</span>, <span class="number">1</span>]]), np.ones((<span class="number">2</span>, <span class="number">2</span>)))</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>out:</span><br><span class="line"><span class="number">0.5</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查准率、查全率<br>对于二分类问题，可以将样例划分为真正例(true positive)、假正例(false positive)、真反例(true negative)、假反例(false negative)四种情形，令TP、FP、TN、FN分别为其对应的样本数，显然TP + FP + TN + FN = 样本总数。<br>查准率P：在所有预测为正样本的样本(TP+FP)中预测正确(TP)的比例，<br>查全率R：在所有正样本(TP+FN)中，预测正确(TP)的比例。</p>
+<script type="math/tex; mode=display">P = \frac{TP}{TP+FP}</script><script type="math/tex; mode=display">R = \frac{TP}{TP+FN}</script><p>通常，两者往往是一对矛盾的度量，查准率高时，查全率偏低；查全率高时，查准率偏低，只有在一些简单的任务中，两者才可能都高。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 混淆矩阵</span></span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> confusion_matrix</span><br><span class="line">y_true = [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>]</span><br><span class="line">y_pred = [<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>]</span><br><span class="line">tn, fp, fn, tp = confusion_matrix(y_true, y_pred).ravel()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>out:</span><br><span class="line">(<span class="number">2</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>F1分数<br>为了综合考虑查准率与查全率，于是有了F1度量：</p>
+<script type="math/tex; mode=display">F1 = \frac{2 * P * R}{P + R} = \frac{2 * TP}{n_{sample} + TP - TN}</script><p>F1是基于查准率与查全率的调和平均，在一些应用中，对查准率和查全率的重视程度有所不同，因此，有F1加权的一般形式为：</p>
+<script type="math/tex; mode=display">F_{\beta} = \frac{(1+\beta^2) * P * R}{(\beta^2 + P) + R},   \beta > 0</script><p>$\beta$度量了查全率对查准率的相对重要性，$\beta = 1$就是标准的F1；$\beta &gt; 1$时查全率影响更大，反之，查准率影响更大。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#分类指标报告</span></span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> classification_report</span><br><span class="line">y_true = [<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">0</span>]</span><br><span class="line">y_pred = [<span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">0</span>]</span><br><span class="line">target_names = [<span class="string">'class 0'</span>, <span class="string">'class 1'</span>, <span class="string">'class 2'</span>]</span><br><span class="line">print(classification_report(y_true, y_pred, target_names=target_names))</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>out:</span><br><span class="line">             precision    recall  f1-score   support</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> 0       0.67      1.00      0.80         2</span></span><br><span class="line"><span class="class">    <span class="title">class</span> 1       0.00      0.00      0.00         1</span></span><br><span class="line"><span class="class">    <span class="title">class</span> 2       1.00      0.50      0.67         2</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class"><span class="title">avg</span> / <span class="title">total</span>       0.67      0.60      0.59         5</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>ROC与AUC<br>ROC(receiver operating characteristic)曲线的提出是考虑模型在不同任务下的”期望泛化误差”的好坏。<br>“真正率”(true positive rate, TPR)：正确分类的正样本占所有正样本的比例<br>“假正率”(false positive rate, FPR)：误分类为正样本占所有负样本的比例。</p>
+<script type="math/tex; mode=display">TPR = \frac{TP}{TP+FN}</script><script type="math/tex; mode=display">FPR = \frac{FP}{FP+TN}</script><p>ROC曲线就是当将预测结果分割为正负样本的阈值变化时，以FPR作为x轴，以TPR作为y轴得到的曲线，ROC曲线下的面积即为AUC(area under ROC curve)，如下图基于有限预测样本的图：<br><img src="/img/model-selection/roc.png" alt="Alt text"></p>
+<blockquote>
+<p>ROC曲线中的四个点和一条线:<br>(0,1)：即FPR=0，TPR=1，FN＝FP＝0，将所有的样本都正确分类；<br>(1,0)：即FPR=1，TPR=0，最差分类器，避开了所有正确答案；<br>(0,0)：即FPR=TPR=0，FP＝TP＝0，分类预测所有的样本都为负样本；<br>(1,1)：即FPR=TPR=1，FN=TN＝0，分类预测所有的样本都为正样本。<br>总之：ROC曲线越接近左上角，该分类器的性能越好。<br>AUC的情况：<br>AUC = 1：绝对完美分类器，理想状态下，100%完美识别正负类；<br>0.5&lt;AUC&lt;1：优于随机猜测。这个分类器妥善设定阈值的话，可能有预测价值；<br>AUC=0.5：跟随机猜测一样，模型没有预测价值；<br>AUC&lt;0.5：比随机猜测还差；只要反预测就优于随机猜测，不存在该状况。<br>总之：AUC值越大的分类器，正确率越高。</p>
+</blockquote>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ROC</span></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> roc_curve</span><br><span class="line">y = np.array([<span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>])</span><br><span class="line">scores = np.array([<span class="number">0.1</span>, <span class="number">0.4</span>, <span class="number">0.35</span>, <span class="number">0.8</span>])</span><br><span class="line">fpr, tpr, thresholds = roc_curve(y, scores, pos_label=<span class="number">2</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>fpr</span><br><span class="line">array([ <span class="number">0.</span> ,  <span class="number">0.5</span>,  <span class="number">0.5</span>,  <span class="number">1.</span> ])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>tpr</span><br><span class="line">array([ <span class="number">0.5</span>,  <span class="number">0.5</span>,  <span class="number">1.</span> ,  <span class="number">1.</span> ])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>thresholds</span><br><span class="line">array([ <span class="number">0.8</span> ,  <span class="number">0.4</span> ,  <span class="number">0.35</span>,  <span class="number">0.1</span> ])</span><br><span class="line"><span class="comment"># AUC</span></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> roc_auc_score</span><br><span class="line">y_true = np.array([<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>])</span><br><span class="line">y_scores = np.array([<span class="number">0.1</span>, <span class="number">0.4</span>, <span class="number">0.35</span>, <span class="number">0.8</span>])</span><br><span class="line">roc_auc_score(y_true, y_scores)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>out:</span><br><span class="line"><span class="number">0.75</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>既然已经这么多评价标准，为什么还要使用ROC和AUC呢？因为ROC曲线有个很好的特性：当测试集中的正负样本的分布变化的时候，ROC曲线能够保持不变。在实际的数据集中经常会出现类不平衡（class imbalance）现象，即负样本比正样本多很多（或者相反）</p>
+</blockquote>
+<ul>
+<li><p>对数损失<br>对数损失(Log loss)亦被称为逻辑回归损失(Logistic regression loss)或交叉熵损失(Cross-entropy loss)。<br>对于具有真实标签 $y \in {0,1}$ 的二分类和概率估计$p = \rm{Pr}(y = 1)$， 每个样本的log loss是给定的分类器的negative log-likelihood真正的标签:</p>
+<script type="math/tex; mode=display">L_{\log}(y, p) = -\log \rm{Pr}(y|p) = -(y\log (p) + (1 - y) \log (1 - p))</script></li>
+<li><p>铰链损失<br>铰链损失(hinge loss)函数使用hinge loss计算模型和数据之间的平均距离，这是一种只考虑预测误差单向指标，用于最大边界分类器，如支持向量机。<br>铰链损失最开始出现在二分类问题中，假设正样本被标记为1，负样本被标记为-1，$y$是真实值，$w$是预测值，则铰链损失定义为：</p>
+<script type="math/tex; mode=display">L_{\text{Hinge}}(w, y)=\max\{1-wy,0\}=|1-wy|_+</script><p>然后被扩展到多分类问题，假设$y_w$是对真实分类的预测值，$y_t$是对非真实分类预测中的最大值，则铰链损失定义为：</p>
+<script type="math/tex; mode=display">L_{\text{Hinge}}(y_w, y_t)=\max\{1+y_t-y_w,0\}</script></li>
+<li><p>海明距离<br>海明距离(Hamming Distance)用于需要对样本多个标签进行分类的场景。对于给定的样本$i$，$L$是标签数量，则第$i$个样本的的海明距离为：</p>
+<script type="math/tex; mode=display">D_{Hamming}(\hat{y}_i,y_i)=\frac{1}{L}\sum\limits_{j=1}^L 1(\hat{y}_{ij}\neq y_{ij})</script><p>其中$1(x)$是指示函数。当预测结果与实际情况完全相符时，距离为0；当预测结果与实际情况完全不符时，距离为1；当预测结果是实际情况的真子集或真超集时，距离介于0到1之间。<br>我们可以通过对所有样本的预测情况求平均，得到算法在测试集上的总体表现情况，当标签数量$L$为1时，它等价于精度(Accuracy)，当标签数$L&gt;1$时也有较好的区分度，不像准确率那么严格。</p>
+</li>
+<li><p>杰卡德相似系数<br>杰卡德相似系数(Jaccard similarity coefficients)也是用于需要对样本多个标签进行分类的场景。对于给定的样本$i$，$\hat{y}_i$是预测结果，${y}_i$是真实结果，$L$是标签数量，则第$i$个样本的杰卡德相似系数为：</p>
+<script type="math/tex; mode=display">J(\hat{y}_i,y_i)=\frac{|\hat{y}_i\bigcap y_i|}{|\hat{y_i}\bigcup y_i|}</script><p>它与海明距离的不同之处在于分母。当预测结果与实际情况完全相符时，系数为1;当预测结果与实际情况完全不符时，系数为0;当预测结果是实际情况的真子集或真超集时，距离介于0到1之间。<br>同样可以通过对所有样本的预测情况求平均得到算法在测试集上的总体表现情况，当标签数量$L$为1时，它等价于精度(Accuracy)。</p>
+</li>
+</ul>
+<p><strong><code>后续检验方法，未待完续...</code></strong></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+  
+        <div class="post-tags">
+          
+            <a href="/tags/Model-selection/" rel="tag"># Model selection</a>
+          
+        </div>
+      
+  <div>
+    
+      
+
+
+     <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+     <div style="text-align:center;font-size:14px;font-weight:blod"><i class="fa fa-copyright"></i>友情提示: 转载请保留原文链接及作者。</div>
+<br/>
+
+    
+  </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感谢支持、勇于创作</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赞赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/wechat-reward-img.jpg" alt="flary WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/alipay-reward-img.jpg" alt="flary Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+         
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/信贷评分卡模型.html" rel="next" title="信贷评分卡模型">
+                <i class="fa fa-chevron-left"></i> 信贷评分卡模型
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/改进神经网络的学习方法-1.html" rel="prev" title="改进神经网络的学习方法(1)">
+                改进神经网络的学习方法(1) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMjkxNS85NDc2"></div>
+    
+	
+  </div>
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="flary" />
+          <p class="site-author-name" itemprop="name">flary</p>
+          <p class="site-description motion-element" itemprop="description">记录学习、记录成长</p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/flarywu" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://weibo.com/flarygogo" target="_blank" title="weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/flary-53/activities" target="_blank" title="zhihu">
+                  
+                    <i class="fa fa-fw fa-battery-3"></i>
+                  
+                  zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前沿"><span class="nav-number">1.</span> <span class="nav-text">前沿</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#统计学习三要素"><span class="nav-number">2.</span> <span class="nav-text">统计学习三要素</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模型评估与选择"><span class="nav-number">3.</span> <span class="nav-text">模型评估与选择</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#经验误差与过拟合"><span class="nav-number">3.1.</span> <span class="nav-text">经验误差与过拟合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#评估方法"><span class="nav-number">3.2.</span> <span class="nav-text">评估方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#留出法-hold-out"><span class="nav-number">3.2.1.</span> <span class="nav-text">留出法(hold-out)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#交叉验证法-cross-validation"><span class="nav-number">3.2.2.</span> <span class="nav-text">交叉验证法(cross validation)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#自助法-bootstrapping"><span class="nav-number">3.2.3.</span> <span class="nav-text">自助法(bootstrapping)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#调参与最终模型"><span class="nav-number">3.2.4.</span> <span class="nav-text">调参与最终模型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#性能评估"><span class="nav-number">3.3.</span> <span class="nav-text">性能评估</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#回归预测常用的性能度量"><span class="nav-number">3.3.1.</span> <span class="nav-text">回归预测常用的性能度量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分类问题常用的性能度量"><span class="nav-number">3.3.2.</span> <span class="nav-text">分类问题常用的性能度量</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-tint"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">flary</span>
+</div>
+ <!--以下3行为一条竖线和Coding Page-->
+  <div class="powered-by">  
+  <span>Hosted by <a href="https://pages.coding.me" style="font-weight: bold">Coding Pages</a></span>
+  </div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io" rel="external nofollow">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next" rel="external nofollow">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.1.3/jquery.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid="></script>
+      <!-- UY END -->
+  
+
+
+
+
+   
+     
+   
+  
+       <!-- UY BEGIN -->
+       <script type="text/javascript">
+          (function(d, s) {
+              var j, e = d.getElementsByTagName(s)[0];
+              if (typeof LivereTower === 'function') { return; }
+              j = d.createElement(s);
+              j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+              j.async = true;
+              e.parentNode.insertBefore(j, e);
+          })(document, 'script');
+       </script>
+       <noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+       <!-- UY END -->
+   
+ 
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+
+</body>
+</html>

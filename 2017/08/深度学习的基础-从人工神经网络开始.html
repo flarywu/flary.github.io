@@ -1,0 +1,1243 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Neucha:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+  
+
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Neural Networks," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="flary's blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="前言 深度学习（Deep Learning）目前是人工智能领域的大杀器，然而对于大多数研究者来说，对于深度神经网络的理解并不是很透彻，往往视其为黑盒子般的存在，包括本人，也只是知其然却不知其所以然。于是乎，从细节出发，本人决定好好探索深度学习中的奥妙。本文摘自analyticsvidhya上的一篇好文，该文对于从神经网络到深度学习的关键点有很细致、到位的理解。 介绍 深度学习（DL）和神经网络（N">
+<meta name="keywords" content="Neural Networks">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深度学习基础 - 从人工神经网络开始">
+<meta property="og:url" content="http://yoursite.com/child/2017/08/深度学习的基础-从人工神经网络开始.html">
+<meta property="og:site_name" content="flary&#39;s blog">
+<meta property="og:description" content="前言 深度学习（Deep Learning）目前是人工智能领域的大杀器，然而对于大多数研究者来说，对于深度神经网络的理解并不是很透彻，往往视其为黑盒子般的存在，包括本人，也只是知其然却不知其所以然。于是乎，从细节出发，本人决定好好探索深度学习中的奥妙。本文摘自analyticsvidhya上的一篇好文，该文对于从神经网络到深度学习的关键点有很细致、到位的理解。 介绍 深度学习（DL）和神经网络（N">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/img/deeplearning/ann3.jpg">
+<meta property="og:image" content="http://yoursite.com/img/deeplearning/1.-neuron.jpg">
+<meta property="og:image" content="http://yoursite.com/img/deeplearning/2.-ann-structure.jpg">
+<meta property="og:image" content="http://yoursite.com/img/deeplearning/1.jpg">
+<meta property="og:image" content="http://yoursite.com/img/deeplearning/2.jpg">
+<meta property="og:image" content="http://yoursite.com/img/deeplearning/3.-tt-and-1.png">
+<meta property="og:image" content="http://yoursite.com/img/deeplearning/3.jpg">
+<meta property="og:image" content="http://yoursite.com/img/deeplearning/4.-tt-or-1.png">
+<meta property="og:image" content="http://yoursite.com/img/deeplearning/4.jpg">
+<meta property="og:image" content="http://yoursite.com/img/deeplearning/5.-tt-not-2.png">
+<meta property="og:image" content="http://yoursite.com/img/deeplearning/6.-xnor-tt.png">
+<meta property="og:image" content="http://yoursite.com/img/deeplearning/4b.jpg">
+<meta property="og:image" content="http://yoursite.com/img/deeplearning/7.-tt-A.B.png">
+<meta property="og:image" content="http://yoursite.com/img/deeplearning/5-1.jpg">
+<meta property="og:image" content="http://yoursite.com/img/deeplearning/6.jpg">
+<meta property="og:image" content="http://yoursite.com/img/deeplearning/8.-tt-xnor-case-1.png">
+<meta property="og:image" content="http://yoursite.com/img/deeplearning/7.jpg">
+<meta property="og:image" content="http://yoursite.com/img/deeplearning/8.jpg">
+<meta property="og:image" content="http://yoursite.com/img/deeplearning/9.-tt-xnor-case-2.png">
+<meta property="og:image" content="http://yoursite.com/img/deeplearning/daigram-9.jpg">
+<meta property="og:image" content="http://yoursite.com/img/deeplearning/diagram-10.jpg">
+<meta property="og:image" content="http://yoursite.com/img/deeplearning/diagram-11.jpg">
+<meta property="og:updated_time" content="2018-05-06T07:55:26.565Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深度学习基础 - 从人工神经网络开始">
+<meta name="twitter:description" content="前言 深度学习（Deep Learning）目前是人工智能领域的大杀器，然而对于大多数研究者来说，对于深度神经网络的理解并不是很透彻，往往视其为黑盒子般的存在，包括本人，也只是知其然却不知其所以然。于是乎，从细节出发，本人决定好好探索深度学习中的奥妙。本文摘自analyticsvidhya上的一篇好文，该文对于从神经网络到深度学习的关键点有很细致、到位的理解。 介绍 深度学习（DL）和神经网络（N">
+<meta name="twitter:image" content="http://yoursite.com/img/deeplearning/ann3.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"right","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/child/2017/08/深度学习的基础-从人工神经网络开始.html"/>
+
+
+
+
+
+  <title> 深度学习基础 - 从人工神经网络开始 | flary's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?209ead5acf7ef7ede1674e500c4430d5";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta custom-logo">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">flary's blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <h1 class="site-subtitle" itemprop="description">flary的个人博客</h1>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="search.placeholder" spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/child/2017/08/深度学习的基础-从人工神经网络开始.html">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="flary">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="flary's blog">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="flary's blog" src="/images/avatar.jpg">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+            
+            
+              
+                深度学习基础 - 从人工神经网络开始
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-21T17:33:27+08:00">
+                2017-08-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Deep-Learning/" itemprop="url" rel="index">
+                    <span itemprop="name">Deep Learning</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+         
+		<span class="post-time">
+	   &nbsp; | &nbsp;
+           <span class="post-meta-item-icon">
+             <i class="fa fa-file-word-o" aria-hidden="true"></i>
+           </span>
+           <span class="post-meta-item-text">字数统计:</span>
+           <span class="post-count">3,952 字</span>
+           
+         </span>
+	  
+      <span class="post-time">
+	   &nbsp; | &nbsp;
+           <span class="post-meta-item-icon">
+             <i class="fa fa-clock-o" aria-hidden="true"></i>
+           </span>
+           <span class="post-meta-item-text">阅读时长:</span>
+           <span class="post-count">14 分钟</span>
+           
+         </span>
+         </span>
+          
+
+		 
+		 
+          
+ 
+        
+
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><hr>
+<p><strong>深度学习</strong>（Deep Learning）目前是人工智能领域的大杀器，然而对于大多数研究者来说，对于深度神经网络的理解并不是很透彻，往往视其为黑盒子般的存在，包括本人，也只是知其然却不知其所以然。于是乎，从细节出发，本人决定好好探索深度学习中的奥妙。本文摘自<a href="https://www.analyticsvidhya.com/" target="_blank" rel="noopener">analyticsvidhya</a>上的一篇<a href="https://www.analyticsvidhya.com/blog/2016/03/introduction-deep-learning-fundamentals-neural-networks/" target="_blank" rel="noopener">好文</a>，该文对于从神经网络到深度学习的关键点有很细致、到位的理解。</p>
+<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><hr>
+<p><strong>深度学习</strong>（DL）和<strong>神经网络</strong>（NN）正推动着当今世纪的一些最具独创性的发明。它们难以置信的从数据和环境中学习的能力，使之成为科学家的首选。深度学习和神经网络是自动驾驶汽车，图像识别软件，推荐系统等产品的核心。显然，作为一种强大的算法，它对各种数据类型也具有高度的自适应性。<br><img src="/img/deeplearning/ann3.jpg" alt="Alt text"></p>
+<h1 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h1><hr>
+<pre><code>什么是神经网络？ 
+单神经元如何工作？ 
+为什么多层网络有用？
+神经网络的一般结构
+反向传播（非常重要）
+</code></pre><h2 id="什么是神经网络？"><a href="#什么是神经网络？" class="headerlink" title="什么是神经网络？"></a>什么是神经网络？</h2><p>神经网络（NN）也被称为人工神经网络，是以人类神经系统运转的人工表示而命名的。首先我们来了解下神经系统是如何工作的，神经系统由数以百万计的神经细胞或神经元组成，神经元具有以下结构：<br><img src="/img/deeplearning/1.-neuron.jpg" alt="Alt text"></p>
+<p>它的主要组件包括：</p>
+<ul>
+<li>树突 - 它以电脉冲的形式从其他神经元获取输入。</li>
+<li>细胞体 - 它从这些输入生成推论并决定采取什么行动 。</li>
+<li>轴突终端 - 它以电脉冲的形式进行传输。</li>
+</ul>
+<p>简而言之，每个神经元都通过树突从许多其他神经元接受输入。然后，对输入执行所需的处理，并通过轴突将另一个电脉冲发送到终端节点，从那里又传送给许多其他神经元。</p>
+<p>ANN的工作方式非常相似。神经网络的一般结构如下所示：<br><img src="/img/deeplearning/2.-ann-structure.jpg" alt="Alt text"></p>
+<p>上图红色框中单独描绘了单一神经元的典型神经网络结构。让我们来理解这一点，每个神经元的输入都是树突，就像在人类的神经系统中一样，一个神经元（虽然是人为的）集结所有的输入并对它们进行操作处理。然后，将输出传送给它所连接的其他神经元（即下一层）。神经网络层次分为3种类型：</p>
+<ul>
+<li>输入层：通过将观察样本传入到神经元。</li>
+<li>隐藏层：这是输入层和输出层之间的中间层，帮助神经网络学习数据中涉及的复杂关系。</li>
+<li>输出层：最后的输出是从前两层提取的。例如：对于一个5个类的分类问题，输出将会有5个神经元。</li>
+</ul>
+<p>我们先通过例子来看看每个神经元的功能。</p>
+<h2 id="单神经元如何工作？"><a href="#单神经元如何工作？" class="headerlink" title="单神经元如何工作？"></a>单神经元如何工作？</h2><p>在本小节，透过简单的例子来了解单个神经元的工作机制，从而直观地理解神经元是如何通过使用输入来计算输出。单个神经元的神经网络结构如下：<br><img src="/img/deeplearning/1.jpg" alt="Alt text"><br>与人类神经系统的神经元不同的是：</p>
+<ul>
+<li>x1,x2,…,xN：神经元的输入。这些可以是来自输入层的实际观察值或来自某个隐藏层的中间值。</li>
+<li>x0：偏置单元。它是一个组成激活函数变量的常量值。</li>
+<li>a：神经元的输出，它按照以下公式计算得到：<script type="math/tex; mode=display">a =   f(\sum_{i=0}^N w_ix_i)</script></li>
+</ul>
+<p>这里，<em>f</em> 被称之为激活函数，它使得神经网络结构非常灵活，并且能够探索到数据中复杂的非线性关系。它可以是高斯函数，逻辑函数，双曲函数或甚至是简单的线性函数。</p>
+<p>接下来，我们来实现神经网络中的3个基本函数：OR, AND, NOT，这有助于了解它们的内在本质。假设有一个分类问题，可以预测不同输入组合的输出（0或1），我们将使用以下激活函数对线性分类器进行建模：</p>
+<script type="math/tex; mode=display">f(x) = \begin{cases}  
+0, & x < 0 \\
+1, & x >= 0
+\end{cases}</script><h3 id="实例：AND函数"><a href="#实例：AND函数" class="headerlink" title="实例：AND函数"></a>实例：AND函数</h3><p>AND函数可以这样实现：<br><img src="/img/deeplearning/2.jpg" alt="Alt text"></p>
+<p>该神经元的输出是：</p>
+<script type="math/tex; mode=display">a = f(-1.5 + x_1 + x_2)</script><p>它对应的真值表是：<br><img src="/img/deeplearning/3.-tt-and-1.png" alt="Alt text"></p>
+<p>我们可以看到，AND函数被成功实现了。列’a’和列’X1 AND X2’是一致的。我们注意到此时偏置项权重等于-1.5，但是它不是一个定值，直觉上，我们可以把它赋值为只有当$x_1$和$x_2$都是正数的情况下，并且满足总和为正数情况下的任何值。因此，当它取值（-1，-2）之间时满足要求。</p>
+<h3 id="实例：OR函数"><a href="#实例：OR函数" class="headerlink" title="实例：OR函数"></a>实例：OR函数</h3><p>OR函数可以这样实现：<br><img src="/img/deeplearning/3.jpg" alt="Alt text"></p>
+<p>该神经元对应的输出是：</p>
+<script type="math/tex; mode=display">a = f(-0.5 + x_1 + x_2)</script><p>它对应的真值表为：<br><img src="/img/deeplearning/4.-tt-or-1.png" alt="Alt text"></p>
+<p>列’a’和列’X1 OR X2’是一致的。我们可以看到，通过改变偏置项的权重，就可以实现OR函数了。这个上面的实例很相似，同样，可以直觉地认为偏置项权重取值为当$x_1$或$x_2$至少有一个正值，并满足总和为正数情况下的任何值。</p>
+<h3 id="实例：NOT函数"><a href="#实例：NOT函数" class="headerlink" title="实例：NOT函数"></a>实例：NOT函数</h3><p>同上例一样，NOT函数可以如下被实现：<br><img src="/img/deeplearning/4.jpg" alt="Alt text"></p>
+<p>该神经元对应的输出是：</p>
+<script type="math/tex; mode=display">a = f(1 - 2 * x_1)</script><p>它对应的真值表为：<br><img src="/img/deeplearning/5.-tt-not-2.png" alt="Alt text"></p>
+<p>同样，输出符合NOT函数的表达式，相信通过这些例子，大概可以直观地了解神经网络中的神经元是如何工作的，上面的几个例子都是用了一个简单的激活函数。</p>
+<blockquote>
+<p>注意：上面所用的简单激活函数往往会被替之为逻辑函数，因为逻辑函数可微分并且能求梯度。这是一方面，还有其他，也就是它的输出是浮点值，而不是非0即1。</p>
+</blockquote>
+<h2 id="为什么多层网络有用？"><a href="#为什么多层网络有用？" class="headerlink" title="为什么多层网络有用？"></a>为什么多层网络有用？</h2><p>理解了单神经元是如何工作之后，让我们继续探索神经网络是怎么通过多层网络结构学习数据间的复杂关系。理解这一点之前，先来看一个 XNOR函数的例子，回顾一下， XNOR函数的真值表如下：<br><img src="/img/deeplearning/6.-xnor-tt.png" alt="Alt text"></p>
+<p>表中可以看出，只有当输入相等时输出才等于1，否则，等于0。这种关系不能用单个神经元建模（不相信？不信试试！），因此接下来我们会用多层网络，使用多层网络的核心思想是复杂关系可以被分解为多个简单的函数。<br>我们来分解下XNOR函数：</p>
+<script type="math/tex; mode=display">\begin{aligned}
+X_1 \ XNOR \ X_2  =& NOT ( X_1 \ XOR \ X_2 ) \\
+                        =& NOT [ (A+B).(A'+B') ]  \\
+                        =& (A+B)' + (A'+B')'  \\
+                        =& (A'.B') + (A.B) 
+ \end{aligned}</script><blockquote>
+<p> 注意： ‘+’ 指 OR， ‘.’ 指 AND</p>
+</blockquote>
+<p>现在我们可以使用任何一个简化的例子来实现它。接下来将演示如何使用2个实例去实现XNOR函数。</p>
+<h3 id="实例：-X-1-XNOR-X-2-A’-B’-A-B"><a href="#实例：-X-1-XNOR-X-2-A’-B’-A-B" class="headerlink" title="实例：$X_1 \ XNOR \ X_2 = (A’.B’) + (A.B)$"></a>实例：$X_1 \ XNOR \ X_2 = (A’.B’) + (A.B)$</h3><p>这里的难点就在于怎么设计一个神经元去模拟实现$A’.B’$，可以用以下方式：<br><img src="/img/deeplearning/4b.jpg" alt="Alt text"><br>该神经元对应的输出是：</p>
+<script type="math/tex; mode=display">a = f(0.5 -  x_1 - x_2)</script><p>它对应的真值表为：<br><img src="/img/deeplearning/7.-tt-A.B.png" alt="Alt text"></p>
+<p>现在我们已经对各个分函数进行了建模，接下来我们可以使用多层网络对它们进行组合。首先，看看该神经网络结构的语义图：<br><img src="/img/deeplearning/5-1.jpg" alt="Alt text"></p>
+<p>可以看出，在第1层中，我们将分别实现$A’.B’$和$A.B$，在第2层，我们将使用它们的输出实现一个OR函数。这样将完成整个神经网络过程，最终的网络将如下所示：<br><img src="/img/deeplearning/6.jpg" alt="Alt text"></p>
+<p>如果你仔细观察会发现，上图只不过是我们已经绘制的不同神经元的组合。不同的输出代表不同的单元：</p>
+<ul>
+<li>$a_1$：实现$A’.B’$</li>
+<li>$a_2$：实现$A.B$</li>
+<li>$a_2$：实现$a_1$和$a_2$的OR函数，也就是有效实现$ (A’.B’ + A.B)$</li>
+</ul>
+<p>该函数可以使用以下真值表进行验证：<br><img src="/img/deeplearning/8.-tt-xnor-case-1.png" alt="Alt text"></p>
+<p>通过上述例子应该大概了解了多层神经网络是如何工作的，我们接下来再实现另一情况。</p>
+<h3 id="实例：-X-1-XNOR-X-2-NOT-A-B-A’-B’"><a href="#实例：-X-1-XNOR-X-2-NOT-A-B-A’-B’" class="headerlink" title="实例：$X_1 \ XNOR \ X_2 = NOT[(A + B) . (A’ + B’)]$"></a>实例：$X_1 \ XNOR \ X_2 = NOT[(A + B) . (A’ + B’)]$</h3><p>上例中，我们必须单独计算$A’.B’$。如果想直接用基本的AND，OR，NOT函数来实现函数，该怎么办呢？考虑以下语义图：<br><img src="/img/deeplearning/7.jpg" alt="Alt text"></p>
+<p>这里，可以看到我们不得不使用3个隐藏层。和之前的过程类似，该网络看起来像：<br><img src="/img/deeplearning/8.jpg" alt="Alt text"></p>
+<p>这里神经元执行以下操作：</p>
+<ul>
+<li>$a_1$: 同A一样</li>
+<li>$a_2$: 代表A’</li>
+<li>$a_3$: 同B一样</li>
+<li>$a_4$: 代表A’</li>
+<li>$a_5$: 实现OR函数，指的是$A + B$</li>
+<li>$a_6$: 实现OR函数，指的是$A’ + B’$</li>
+<li>$a_7$: 实现AND函数，指的是$(A + B).(A’ + B’)$</li>
+<li>$a_8$: 实现NOT函数，指的是$NOT[(A + B).(A’ + B’)]$，就是最终的XNOR函数</li>
+</ul>
+<p>注意，通常情况下，神经元会传送到下一个层的除偏置项之外的其他每个神经元。而在此例中，我已经忽略了从第1层到第2层的几个连接，这是因为它们的权重为0，添加它们会使得在视觉上不太好表达。<br>对应的真值表如下：<br><img src="/img/deeplearning/9.-tt-xnor-case-2.png" alt="Alt text"></p>
+<p>最后，我们成功实现了XNOR函数，这种方法比情况1更复杂。因此，应该首选情况1的结构。但这里的核心思想是想展示如何将复杂的函数分解成多个网络层次，于是多层网络的优势在此就凸显出来了。</p>
+<h2 id="神经网络的一般结构"><a href="#神经网络的一般结构" class="headerlink" title="神经网络的一般结构"></a>神经网络的一般结构</h2><p>本节，我们来看一些基本的例子，让我们定义一个神经网络的通用结构。我们还会看到根据给定输入来计算输出的过程，该过程也称为前向传播过程。<br>通用神经网络可以定义为：<br><img src="/img/deeplearning/daigram-9.jpg" alt="Alt text"></p>
+<p>它总共有L层，包括1个输入层，1个输出层和L-2个隐藏层。一些术语如下：</p>
+<ul>
+<li>L：网络的层数</li>
+<li>$N_i$：第i层网络的节点数量，除了偏置项，其中i=1,2,…,L</li>
+<li>$a_i^{(j)}$：第i层网络的第j个节点的输出，其中i=1,2,…,L，j=0,1,2,…$N_i$</li>
+</ul>
+<p>由于每层网络的输出构成了下一层网络的输入，下面我们利用第i层网络的输出来定义第i+1层网络的输出公式。<br>第i+1层网络的输入如下：</p>
+<script type="math/tex; mode=display">\begin{aligned}
+& A_i = [a_i^{(0)}, a_i^{(1)},.....,a_i^{(N_i)}]  \\
+& 维度：1 * N_i + 1
+\end{aligned}</script><p>从第i层网络到第i+1层网络的权重矩阵为：</p>
+<script type="math/tex; mode=display">\begin{aligned}
+W^{(i)}   = [& [W_{01}^{(i)}, W_{11}^{(i)},.....,W_{N_i1}^{(i)}] \\
+                 & [W_{02}^{(i)}, W_{12}^{(i)},.....,W_{N_i2}^{(i)}]  \\
+                 & [\                          ...                   ...] \\
+                 &  [W_{0N_{i+1}}^{(i)}, W_{1N_{i+1}}^{(i)},.....,W_{N_iN_{i+1}}^{(i)}]]  \\
+                 & 维度： N_i + 1 * N_i + 1
+\end{aligned}</script><p>那么。第i+1层网络的输出可以被计算为：</p>
+<script type="math/tex; mode=display">\begin{aligned}
+& A_{i+1} = f(A_i * W^{(i)}) \\
+& 维度：1 * N_i + 1
+\end{aligned}</script><p>对于每一层网络使用上述公式，我们就可以得到最终的输出。输出层的节点数量依具体的问题而异，对于回归预测或者二分类问题输出节点可以是1个，对于多分类问题则可以是多个。</p>
+<p>上述只是通过一轮迭代得到最终的输出。模型的最终目标则是更新权重，以最大限度地减少损失函数，权重的更新会使用接下来要介绍的反向传播算法。</p>
+<h2 id="反向传播（非常重要）"><a href="#反向传播（非常重要）" class="headerlink" title="反向传播（非常重要）"></a>反向传播（非常重要）</h2><p>反向传播（BP）算法的工作原理是确定输出端的损失（或误差），然后将其传播回网络，更新权重，以最小化每个神经元产生的误差。接下来不会详细介绍算法，但会试着给一些关于它如何运作的例子。</p>
+<p>最小化误差的第一步是计算每个节点关于最终输出的梯度。由于这是一个多层的网络，因此计算梯度没那么直接。</p>
+<p>我们来了解下多层网络的梯度，抛开神经网络不讲，先考虑一个非常简单的结构，如下所示：<br><img src="/img/deeplearning/diagram-10.jpg" alt="Alt text"><br>该结构有三个输入，满足：</p>
+<script type="math/tex; mode=display">d = a - b \\ 
+e = d * c = (a - b) * c</script><p>现在，我们要求解a,b,c,d关于输出e的梯度，这很直接就能得到：</p>
+<script type="math/tex; mode=display">\frac{\partial e}{\partial d} = c \ \frac{\partial e}{\partial c} = d \\
+ \frac{\partial d}{\partial a} = 1 \ \frac{\partial d}{\partial b} = -1</script><p>然而，为了计算a,b关于e的梯度，我们要用到链式法则：</p>
+<script type="math/tex; mode=display">\frac{\partial e}{\partial a} = \frac{\partial e}{\partial d} * \frac{\partial d}{\partial a}  = c \\
+\frac{\partial e}{\partial b} = \frac{\partial e}{\partial d} * \frac{\partial d}{\partial b}  = -c</script><p>因此，节点的梯度可以通过该节点输入时的梯度乘以接下来输出时的梯度计算得到，仔细看几遍上述公式，就可以理解。</p>
+<p>然而，实际应用中没这么简单。我们再来看看另外一个例子。考虑一个节点被传入给下一层多个节点的情景，而这种情况在神经网络中也是经常存在的。<br><img src="/img/deeplearning/diagram-11.jpg" alt="Alt text"></p>
+<p>这种情况下，除了节点m，其他节点的梯度和上面一样都很容易计算得到，因为m被传输给两个节点了。在此，我将介绍如何计算m的梯度，其余部分自行参照计算。</p>
+<script type="math/tex; mode=display">\frac{\partial o}{\partial n} = p \ \frac{\partial o}{\partial p}  = n \\
+\frac{\partial n}{\partial m} = 1 \ \frac{\partial p}{\partial m}  = 1 \\
+\frac{\partial o}{\partial m} = (\frac{\partial o}{\partial n} * \frac{\partial n}{\partial m} ) + (\frac{\partial o}{\partial p} * \frac{\partial p}{\partial m} ) = p + n</script><p>可以看到，目标梯度是两个不同梯度的总和，我想大家应该看明白了，好好理解一下，接下来继续。先总结下优化一个神经网络的整体过程，每次迭代时需要做的事情如下：</p>
+<ul>
+<li>确定一个神经网络结构，包括隐藏层的层数，每一层网络的节点数量，以及激活函数。</li>
+<li>随机初始化权重系数。</li>
+<li>通过前向传播计算输出。</li>
+<li>利用真实标签计算模型的误差。</li>
+<li>将误差反向传播到网络，并计算每个节点的误差。</li>
+<li>通过更新权重系数以最小化梯度。</li>
+</ul>
+<p>至此，我们已经介绍了1-3点，第5点也有所了解。接下来我们来关注4-6点，我们将采用第四小节同样的神经网络结构。</p>
+<h3 id="点4-模型的误差"><a href="#点4-模型的误差" class="headerlink" title="点4-模型的误差"></a>点4-模型的误差</h3><script type="math/tex; mode=display">e_L^{(i)} = y^{(i)} - a_L^{(i)}</script><p>上式中，$y^{(i)}$ 是训练样本的实际输出。</p>
+<h3 id="点5-误差反向传播到网络"><a href="#点5-误差反向传播到网络" class="headerlink" title="点5-误差反向传播到网络"></a>点5-误差反向传播到网络</h3><p>首先，第L-1层网络的误差可以通过下式计算得到：</p>
+<script type="math/tex; mode=display">e_{L - 1}^{(i)} = (\sum_{k=1}^{N_L} W_{ik}^{L-1} . e_L^{(i)}) * f'(x)^{(i)}</script><p>其中，i = 0,1,2,…$N_{L-1}$（L-1层网络的节点数量）<br>小节过半，来看下一些概念：</p>
+<ul>
+<li>我们知道一个节点的梯度是它下一层网络所有节点梯度的函数。在此，一个节点产生的误差是基于他下一层网络所有节点误差的权重和，而该节点的输出也组成了下一层网络的输出。由于误差又是通过计算节点的梯度得以优化，因此梯度的影响显而易见。</li>
+<li>$f’(x)^{(i)}$ 是指变量关于激活函数的导数。注意，x指的是该层所有节点的加权和。</li>
+<li>链式规则在这里排上场了，乘上了当前节点的梯度，也就是$f’(x)^{(i)}$与下一层网络节点组合（方程的第一部分）的相乘。</li>
+</ul>
+<p>上式需要从第L-1层到第2层连续重复计算，记住，第一层就是训练样本本身。</p>
+<h3 id="点6-更新权重系数以最小化梯度"><a href="#点6-更新权重系数以最小化梯度" class="headerlink" title="点6-更新权重系数以最小化梯度"></a>点6-更新权重系数以最小化梯度</h3><p>用以下规则更新权重系数：</p>
+<script type="math/tex; mode=display">W_{ik}^{(l)} = W_{ik}^{(l)} + a^{(i)} . e_{l+1}^{(k)}</script><p>其中，</p>
+<ul>
+<li>$l = 1,2,…,(L-1)$，指网络层数的索引（除了最终的输出层）。</li>
+<li>$i = 0,1,…N_l$，指第l层网络的节点索引。</li>
+<li>$k = 1,2,…N_{l+1}$，指第l+1层网络的节点索引。</li>
+<li>$W_{ik}^{(l)}$ 指的是从第l层的第i个节点到第l+1层网络的第k节点的权重。</li>
+</ul>
+<p>上式是非常明确的，如有不懂的地方，我建议多看几遍。</p>
+<h1 id="结束语"><a href="#结束语" class="headerlink" title="结束语"></a>结束语</h1><hr>
+<p>本文的重点是神经网络的基本原理及其工作原理。希望大家现在能理解一个神经网络是如何工作的，从而再也不会把它当作一个黑盒子，一旦你理解了，实际上也很容易，期待着与您进一步交流！</p>
+<p>参考文献：<a href="https://www.analyticsvidhya.com/blog/2016/03/introduction-deep-learning-fundamentals-neural-networks/" target="_blank" rel="noopener">https://www.analyticsvidhya.com/blog/2016/03/introduction-deep-learning-fundamentals-neural-networks/</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+  
+        <div class="post-tags">
+          
+            <a href="/tags/Neural-Networks/" rel="tag"># Neural Networks</a>
+          
+        </div>
+      
+  <div>
+    
+      
+
+
+     <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+     <div style="text-align:center;font-size:14px;font-weight:blod"><i class="fa fa-copyright"></i>友情提示: 转载请保留原文链接及作者。</div>
+<br/>
+
+    
+  </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感谢支持、勇于创作</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赞赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/wechat-reward-img.jpg" alt="flary WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/alipay-reward-img.jpg" alt="flary Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+         
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/XGBoost-参数调优.html" rel="next" title="XGBoost-参数调优">
+                <i class="fa fa-chevron-left"></i> XGBoost-参数调优
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/04/信贷评分卡模型.html" rel="prev" title="信贷评分卡模型">
+                信贷评分卡模型 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMjkxNS85NDc2"></div>
+    
+	
+  </div>
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="flary" />
+          <p class="site-author-name" itemprop="name">flary</p>
+          <p class="site-description motion-element" itemprop="description">记录学习、记录成长</p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/flarywu" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://weibo.com/flarygogo" target="_blank" title="weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/flary-53/activities" target="_blank" title="zhihu">
+                  
+                    <i class="fa fa-fw fa-battery-3"></i>
+                  
+                  zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#介绍"><span class="nav-number">2.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#目录"><span class="nav-number">3.</span> <span class="nav-text">目录</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是神经网络？"><span class="nav-number">3.1.</span> <span class="nav-text">什么是神经网络？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#单神经元如何工作？"><span class="nav-number">3.2.</span> <span class="nav-text">单神经元如何工作？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实例：AND函数"><span class="nav-number">3.2.1.</span> <span class="nav-text">实例：AND函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实例：OR函数"><span class="nav-number">3.2.2.</span> <span class="nav-text">实例：OR函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实例：NOT函数"><span class="nav-number">3.2.3.</span> <span class="nav-text">实例：NOT函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么多层网络有用？"><span class="nav-number">3.3.</span> <span class="nav-text">为什么多层网络有用？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实例：-X-1-XNOR-X-2-A’-B’-A-B"><span class="nav-number">3.3.1.</span> <span class="nav-text">实例：$X_1 \ XNOR \ X_2 = (A’.B’) + (A.B)$</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实例：-X-1-XNOR-X-2-NOT-A-B-A’-B’"><span class="nav-number">3.3.2.</span> <span class="nav-text">实例：$X_1 \ XNOR \ X_2 = NOT[(A + B) . (A’ + B’)]$</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#神经网络的一般结构"><span class="nav-number">3.4.</span> <span class="nav-text">神经网络的一般结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#反向传播（非常重要）"><span class="nav-number">3.5.</span> <span class="nav-text">反向传播（非常重要）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#点4-模型的误差"><span class="nav-number">3.5.1.</span> <span class="nav-text">点4-模型的误差</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#点5-误差反向传播到网络"><span class="nav-number">3.5.2.</span> <span class="nav-text">点5-误差反向传播到网络</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#点6-更新权重系数以最小化梯度"><span class="nav-number">3.5.3.</span> <span class="nav-text">点6-更新权重系数以最小化梯度</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#结束语"><span class="nav-number">4.</span> <span class="nav-text">结束语</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-tint"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">flary</span>
+</div>
+ <!--以下3行为一条竖线和Coding Page-->
+  <div class="powered-by">  
+  <span>Hosted by <a href="https://pages.coding.me" style="font-weight: bold">Coding Pages</a></span>
+  </div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io" rel="external nofollow">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next" rel="external nofollow">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.1.3/jquery.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid="></script>
+      <!-- UY END -->
+  
+
+
+
+
+   
+     
+   
+  
+       <!-- UY BEGIN -->
+       <script type="text/javascript">
+          (function(d, s) {
+              var j, e = d.getElementsByTagName(s)[0];
+              if (typeof LivereTower === 'function') { return; }
+              j = d.createElement(s);
+              j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+              j.async = true;
+              e.parentNode.insertBefore(j, e);
+          })(document, 'script');
+       </script>
+       <noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+       <!-- UY END -->
+   
+ 
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+
+</body>
+</html>

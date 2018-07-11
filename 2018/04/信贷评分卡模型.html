@@ -1,0 +1,1130 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Neucha:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+  
+
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Score card,Logistic," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="flary's blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="简介评分卡是综合个人客户的多个维度信息（如基本情况、偿债能力、信用状况等，重点关注借贷意愿、偿债能力、还款意愿），基于这些信息综合运用数学分析模型，给个人综合评分，判断违约的可能性的工具。信用评分卡模型在国外是一种成熟的预测方法，尤其在信用风险评估以及金融风险控制领域更是得到了比较广泛的使用，其原理是将模型变量WOE编码方式离散化之后运用logistic回归模型进行的一种二分类变量的广义线性模型。">
+<meta name="keywords" content="Score card,Logistic">
+<meta property="og:type" content="article">
+<meta property="og:title" content="信贷评分卡模型">
+<meta property="og:url" content="http://yoursite.com/child/2018/04/信贷评分卡模型.html">
+<meta property="og:site_name" content="flary&#39;s blog">
+<meta property="og:description" content="简介评分卡是综合个人客户的多个维度信息（如基本情况、偿债能力、信用状况等，重点关注借贷意愿、偿债能力、还款意愿），基于这些信息综合运用数学分析模型，给个人综合评分，判断违约的可能性的工具。信用评分卡模型在国外是一种成熟的预测方法，尤其在信用风险评估以及金融风险控制领域更是得到了比较广泛的使用，其原理是将模型变量WOE编码方式离散化之后运用logistic回归模型进行的一种二分类变量的广义线性模型。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/img/score-card/芝麻信用.png">
+<meta property="og:image" content="http://yoursite.com/img/score-card/评分卡1.png">
+<meta property="og:image" content="http://yoursite.com/img/score-card/评分卡2.png">
+<meta property="og:image" content="http://yoursite.com/img/score-card/评分卡3.PNG">
+<meta property="og:image" content="http://yoursite.com/img/score-card/评分卡4.png">
+<meta property="og:updated_time" content="2018-04-22T09:21:23.644Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="信贷评分卡模型">
+<meta name="twitter:description" content="简介评分卡是综合个人客户的多个维度信息（如基本情况、偿债能力、信用状况等，重点关注借贷意愿、偿债能力、还款意愿），基于这些信息综合运用数学分析模型，给个人综合评分，判断违约的可能性的工具。信用评分卡模型在国外是一种成熟的预测方法，尤其在信用风险评估以及金融风险控制领域更是得到了比较广泛的使用，其原理是将模型变量WOE编码方式离散化之后运用logistic回归模型进行的一种二分类变量的广义线性模型。">
+<meta name="twitter:image" content="http://yoursite.com/img/score-card/芝麻信用.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"right","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/child/2018/04/信贷评分卡模型.html"/>
+
+
+
+
+
+  <title> 信贷评分卡模型 | flary's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?209ead5acf7ef7ede1674e500c4430d5";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta custom-logo">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">flary's blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <h1 class="site-subtitle" itemprop="description">flary的个人博客</h1>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="search.placeholder" spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/child/2018/04/信贷评分卡模型.html">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="flary">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="flary's blog">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="flary's blog" src="/images/avatar.jpg">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+            
+            
+              
+                信贷评分卡模型
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-04-22T12:23:44+08:00">
+                2018-04-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-Learning/" itemprop="url" rel="index">
+                    <span itemprop="name">Machine Learning</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+         
+		<span class="post-time">
+	   &nbsp; | &nbsp;
+           <span class="post-meta-item-icon">
+             <i class="fa fa-file-word-o" aria-hidden="true"></i>
+           </span>
+           <span class="post-meta-item-text">字数统计:</span>
+           <span class="post-count">3,041 字</span>
+           
+         </span>
+	  
+      <span class="post-time">
+	   &nbsp; | &nbsp;
+           <span class="post-meta-item-icon">
+             <i class="fa fa-clock-o" aria-hidden="true"></i>
+           </span>
+           <span class="post-meta-item-text">阅读时长:</span>
+           <span class="post-count">11 分钟</span>
+           
+         </span>
+         </span>
+          
+
+		 
+		 
+          
+ 
+        
+
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p><strong>评分卡</strong>是综合个人客户的多个维度信息（如基本情况、偿债能力、信用状况等，重点关注借贷意愿、偿债能力、还款意愿），基于这些信息综合运用数学分析模型，给个人综合评分，判断违约的可能性的工具。<br><strong>信用评分卡</strong>模型在国外是一种成熟的预测方法，尤其在信用风险评估以及金融风险控制领域更是得到了比较广泛的使用，其原理是将模型变量WOE编码方式离散化之后运用<em>logistic</em>回归模型进行的一种二分类变量的广义线性模型。（就分析方法发而言，现在分类算法有很多种，决策树，逻辑回归，支持向量机，神经网络等等，都可以实现这个目的）。</p>
+<hr>
+<h2 id="评分卡是什么样子的？"><a href="#评分卡是什么样子的？" class="headerlink" title="评分卡是什么样子的？"></a>评分卡是什么样子的？</h2><p>芝麻信用的评分：<br><img src="/img/score-card/芝麻信用.png" alt="Alt text"></p>
+<p>一个典型的贷前审批评分卡：<br><img src="/img/score-card/评分卡1.png" alt="Alt text"><br>那么，问题来了：<br><img src="/img/score-card/评分卡2.png" alt="Alt text"><br>所以，评分卡设计围绕三个问题开展：</p>
+<ul>
+<li>如何对年龄、收入这样的连续变量进行分组？</li>
+<li>有了分组的结果后，每个分组应该给多少信用分？</li>
+<li>如何定义一个合适的授信门槛分数？</li>
+</ul>
+<hr>
+<h2 id="基于Logistic回归的标准评分卡"><a href="#基于Logistic回归的标准评分卡" class="headerlink" title="基于Logistic回归的标准评分卡"></a>基于<em>Logistic</em>回归的标准评分卡</h2><p>由逻辑回归的基本原理，我们将客户违约的概率表示为p，则正常的概率为1-p。因此，可以得到违约和不违约的概率为：</p>
+<script type="math/tex; mode=display">Odds = \frac{p}{1-p}</script><p>其中，</p>
+<script type="math/tex; mode=display">p(y=1\mid x) = \frac{1}{1+ \rm e^{-g(x)}}</script><script type="math/tex; mode=display">p(y=0\mid x) = 1- p(y=1\mid x) = \frac{1}{1+ \rm e^{g(x)}}</script><p>客户的违约概率也可以表示为：</p>
+<script type="math/tex; mode=display">p = \frac{Odds}{1+Odds}</script><p>评分卡设定的分值刻度可以通过将分值表示为比率对数的线性表达式来定义，即可表示为下式：</p>
+<script type="math/tex; mode=display">Score = A-B*\log(Odds)</script><script type="math/tex; mode=display">\log(Odds) = \beta_{0} + \beta_{1}x_{1} + \beta_{2}x_{2} + \cdots + \beta_{n}x_{n}</script><p>常数A、B的值可以通过将两个已知或假设的分值带入计算得到。通常情况下，需要设定两个假设：<br>（1）给某个特定的比率设定特定的预期分值；<br>（2）确定比率翻番的分数（PDO）</p>
+<script type="math/tex; mode=display">P  = A-B*\log(x)</script><script type="math/tex; mode=display">P - PDO = A-B*\log(2*x)</script><p>评分卡刻度参数A和B确定以后，就可以计算比率和违约概率，以及对应的分值了。通常将常数A称为补偿，常数B称为刻度。 评分卡的分值可表达为：</p>
+<script type="math/tex; mode=display">Score = A - B( \beta_{0} + \beta_{1}x_{1} + \beta_{2}x_{2} + \cdots + \beta_{n}x_{n})</script><p>所有变量都用WOE进行转换，可得到：</p>
+<script type="math/tex; mode=display">Score = (A - B\beta_{0})-(B\beta_{1}w_{11})\delta_{11}-(B\beta_{1}w_{12})\delta_{12}-  \cdots \\ -(B\beta_{x}w_{x1})\delta_{x1} - (B\beta_{x}w_{x2})\delta_{x2} - \cdots</script><p>式中wij为第i个变量第j个值的WOE，为已知变量；betai为逻辑回归方程中的系数，为已知变量；deltaij为二元变量，表示变量i是否取第j个值。此式即为最终评分卡公式。如果变量取不同行并计算其WOE值，式中表示的标准评分卡格式，如下表所示：</p>
+<p><img src="/img/score-card/评分卡3.PNG" alt="Alt text"></p>
+<hr>
+<h2 id="WOE-和-IV-详解"><a href="#WOE-和-IV-详解" class="headerlink" title="WOE 和 IV 详解"></a>WOE 和 IV 详解</h2><h3 id="WOE"><a href="#WOE" class="headerlink" title="WOE"></a>WOE</h3><p><strong>WOE（Weight of Evidence）</strong>，即证据权重。WOE是对原始自变量的一种编码形式。要对一个变量进行WOE编码，需要首先把这个变量进行分组处理（也叫离散化、分箱等等）。 </p>
+<script type="math/tex; mode=display">WOE_{i} = \ln(\frac{py_{i}}{pn_{i}}) = \ln(\frac{\#y_{i}/\#y_{T}}{\#n_{i}/\#n_{T}})</script><p>其中，pyi是这个组中响应客户（风险模型中，对应的是违约客户，总之，指的是模型中预测变量取值为“是”或者说1的个体）占所有样本中所有响应客户的比例，pni是这个组中未响应客户占样本中所有未响应客户的比例，#yi是这个组中响应客户的数量，#ni是这个组中未响应客户的数量，#yT是样本中所有响应客户的数量，#nT是样本中所有未响应客户的数量。</p>
+<p>从公式中可知，WOE表示的实际上是“当前分组中响应客户占所有响应客户的比例”和“当前分组中没有响应的客户占所有没有响应的客户的比例”的差异。对这个公式做一个简单变换，可以得到：</p>
+<script type="math/tex; mode=display">WOE_{i} = \ln(\frac{py_{i}}{pn_{i}}) = \ln(\frac{\#y_{i}/\#y_{T}}{\#n_{i}/\#n_{T}}) \\
+= \ln(\frac{\#y_{i}/\#n_{i}}{\#y_{T}/\#n_{T}})</script><p>变换以后我们可以看出，WOE也可以表示的是当前这个组中响应的客户和未响应客户的比值，和所有样本中这个比值的差异。这个差异是用这两个比值的比值，再取对数来表示的。WOE越大，差异越大，这个分组里的样本响应的可能性就越大，WOE越小，差异越小，这个分组里的样本响应的可能性就越小。<br>我们可以看一下WOE的基本特点：</p>
+<ul>
+<li>当前分组中，响应的比例越大，WOE值越大；</li>
+<li>当前分组WOE的正负，由当前分组响应和未响应的比例，与样本整体响应和未响应的比例的大小关系决定，当前分组的比例小于样本整体比例时，WOE为负，当前分组的比例大于整体比例时，WOE为正，当前分组的比例和整体比例相等时，WOE为0。</li>
+<li>WOE的取值范围是全体实数。</li>
+</ul>
+<h3 id="WOE-和-OR的关系"><a href="#WOE-和-OR的关系" class="headerlink" title="WOE 和 OR的关系"></a>WOE 和 OR的关系</h3><p>OR，即Odds Ratio，是两组Odds的比值，比如age1和age2的Odds Ratio为：</p>
+<script type="math/tex; mode=display">OR_{age2/age1} = \frac{Odds_{age2}}{Odds_{age1}} 
+= \frac{p(y=1\mid Age = age2) / p(y=0\mid Age = age2)}{p(y=1\mid Age = age1) / p(y=0\mid Age = age1)}</script><p>OR和Odds在logistic回归中非常值得重视，因为他们和参数的interpretation有关系，并且，当xi增加一个单位时，Odds将发生相应倍数增长：</p>
+<script type="math/tex; mode=display">OR_{x_{i}+1/x_{i}} = \frac{Odds_{2}}{Odds_{1}} 
+= \frac{p_{2} / 1-p_{2}}{p_{1} / 1-p_{1}}=\frac{\rm e^{\sum_{j \ne i}\beta_{j}x_{j} + \beta_{i}(x_{i}+1)}}{\rm e^{\sum_{j \ne i}\beta_{j}x_{j} + \beta_{i}x_{i}}}=\rm e^{\beta_{i}}</script><p>通过条件概率公式转化可知：</p>
+<script type="math/tex; mode=display">\ln\frac{p(y=1\mid age_{i})}{p(y=0\mid age_{i})} = \ln\frac{p(y=1)}{p(y=0)} + \ln\frac{p(age_{i}\mid y=1)}{p(age_{i}\mid y=0)}</script><p>即：</p>
+<script type="math/tex; mode=display">\ln(Odds_{age_{i}}) = 常数 + WOE_{age_{i}}</script><p>因此，我们可以得到OR和WOE的关系为：</p>
+<script type="math/tex; mode=display">\ln(OR_{age2/age1}) = WOE_{age2}- WOE_{age1}</script><p>结论就是：如果使用了WOE编码，当我们对单变量进行回归（Y~Xi）时，可以不做dummy encoding，此时变量的系数恒为1。WOE编码起到了把回归系数“正则化”的作用。<br>下面用实例证明OR与WOE的关系。<br>WOE:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">df = pd.DataFrame(&#123;<span class="string">'X1'</span>:np.random.randint(<span class="number">3</span>,size=<span class="number">1000</span>),<span class="string">'y'</span>:np.random.randint(<span class="number">2</span>,size=<span class="number">1000</span>)&#125;)</span><br><span class="line">table = pd.crosstab(df[<span class="string">'y'</span>],df[<span class="string">'X1'</span>])</span><br><span class="line">woe_table = table.div(table.sum(axis=<span class="number">1</span>),axis=<span class="number">0</span>)</span><br><span class="line">woe = (woe_table.iloc[<span class="number">1</span>,:] / woe_table.iloc[<span class="number">0</span>,:]).apply(<span class="keyword">lambda</span> x:np.log(x))</span><br><span class="line">print(woe[<span class="number">1</span>]-woe[<span class="number">0</span>])</span><br><span class="line">print(woe[<span class="number">2</span>]-woe[<span class="number">1</span>])</span><br></pre></td></tr></table></figure></p>
+<p>OR:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">OR_0_1 = np.log(<span class="number">1.0</span>*table.iloc[<span class="number">0</span>,<span class="number">0</span>] * table.iloc[<span class="number">1</span>,<span class="number">1</span>] / table.iloc[<span class="number">0</span>,<span class="number">1</span>] / table.iloc[<span class="number">1</span>,<span class="number">0</span>])</span><br><span class="line">OR_1_2 = np.log(<span class="number">1.0</span>*table.iloc[<span class="number">0</span>,<span class="number">1</span>] * table.iloc[<span class="number">1</span>,<span class="number">2</span>] / table.iloc[<span class="number">0</span>,<span class="number">2</span>] / table.iloc[<span class="number">1</span>,<span class="number">1</span>])</span><br><span class="line">print(OR_0_1)</span><br><span class="line">print(OR_1_2)</span><br></pre></td></tr></table></figure></p>
+<h3 id="IV的计算"><a href="#IV的计算" class="headerlink" title="IV的计算"></a>IV的计算</h3><p><strong>IV（Information Value）</strong>，中文意思是信息价值，或者信息量。<br>我们在用逻辑回归、决策树等模型方法构建分类模型时，经常需要对自变量进行筛选。那么我们怎么去挑选入模变量呢？需要考虑的因素很多，比如：变量的预测能力，变量之间的相关性，变量的简单性（容易生成和使用），变量的强壮性（不容易被绕过），变量在业务上的可解释性（被挑战时可以解释的通）等等。但是，其中最主要和最直接的衡量标准是变量的预测能力。我们需要一些具体的量化指标来衡量每自变量的预测能力，并根据这些量化指标的大小，来确定哪些变量进入模型。IV就是这样一种指标，它可以用来衡量自变量的预测能力。类似的指标还有信息增益、基尼系数等等。<br>基于上面的WOE，对于分组i，也会有一个对应的IV值，计算公式如下：</p>
+<script type="math/tex; mode=display">IV_{i} = (py_{i}-pn_{i}) * WOE_{i} = (\#y_{i}/\#y_{T} - \#n_{i}/\#n_{T})\ln(\frac{\#y_{i}/\#y_{T}}{\#n_{i}/\#n_{T}})</script><p>有了一个变量各分组的IV值，我们就可以计算整个变量的IV值，方法很简单，就是把各分组的IV相加：</p>
+<script type="math/tex; mode=display">IV = \sum_{i}^{n} IV_{i}</script><p>我们可以看出IV的以下特点：</p>
+<ul>
+<li>对于变量的一个分组，这个分组的响应和未响应的比例与样本整体响应和未响应的比例相差越大，IV值越大，否则，IV值越小；</li>
+<li>极端情况下，当前分组的响应和未响应的比例和样本整体的响应和未响应的比例相等时，IV值为0；</li>
+<li>IV值的取值范围是$[0,+\infty)$，且，当当前分组中只包含响应客户或者未响应客户时，IV = $+\infty$。</li>
+</ul>
+<p>实际应用中，通过IV值评判特征预测能力的标准如下：<br><img src="/img/score-card/评分卡4.png" alt="Alt text"></p>
+<h3 id="IV的极端情况以及处理方式"><a href="#IV的极端情况以及处理方式" class="headerlink" title="IV的极端情况以及处理方式"></a>IV的极端情况以及处理方式</h3><p>IV依赖WOE，并且IV是一个很好的衡量自变量对目标变量影响程度的指标。但是，使用过程中应该注意一个问题：变量的任何分组中，不应该出现响应数=0或非响应数=0的情况。<br>原因很简单，当变量一个分组中，响应数 = 0时：</p>
+<script type="math/tex; mode=display">WOE_{i} = \ln(\frac{0/\#y_{T}}{\#n_{i}/\#n_{T}}) = -\infty</script><p>而此时，$IV_{i}$为$+\infty$,<br>而当变量一个分组中，没有响应的数量 = 0时：</p>
+<script type="math/tex; mode=display">WOE_{i} = \ln(\frac{\#y_{i}/\#y_{T}}{0/\#n_{T}}) = +\infty</script><p>此时的$IV_{i}$也为$+\infty$，无论IV等于负无穷还是正无穷，都是没有意义的。<br>由上述问题我们可以看到，使用IV其实有一个缺点，就是不能自动处理变量的分组中出现响应比例为0或100%的情况。那么，遇到响应比例为0或者100%的情况，我们应该怎么做呢？建议如下：<br>（1）如果可能，直接把这个分组做成一个规则，作为模型的前置条件或补充条件。<br>（2）重新对变量进行离散化或分组，使每个分组的响应比例都不为0且不为100%，尤其是当一个分组个体数很小时（比如小于100个），强烈建议这样做，因为本身把一个分组个体数弄得很小就不是太合理。<br>（3）如果上面两种方法都无法使用，建议人工把该分组的响应数和非响应的数量进行一定的调整。如果响应数原本为0，可以人工调整响应数为1，如果非响应数原本为0，可以人工调整非响应数为1。</p>
+<h2 id="WOE和IV的意义何在？"><a href="#WOE和IV的意义何在？" class="headerlink" title="WOE和IV的意义何在？"></a>WOE和IV的意义何在？</h2><h3 id="变量替换为WOE值意义"><a href="#变量替换为WOE值意义" class="headerlink" title="变量替换为WOE值意义"></a>变量替换为WOE值意义</h3><ul>
+<li>对自变量进行分档，每档一个值来代表这段的自变量输入，通过转换后实现了稳定性要求；</li>
+<li>克服不同变量间刻度不统一的问题，克服回归中缺失值的填充问题，很多极值变量通过WOE可以变为非异常值；</li>
+<li>WOE能反映自变量的贡献情况，结合模型拟合出的系数和自变量内部WOE值的波动情况，构造出各个自变量的贡献率及相对重要性。一般地，系数越大，WOE的方差越大，则自变量的贡献率越大（类似于某种方差贡献率）。</li>
+<li>WOE与违约概率具有某种线性关系，提升模型的预测效果，提高模型的可理解性<h3 id="IV意义"><a href="#IV意义" class="headerlink" title="IV意义"></a>IV意义</h3></li>
+<li>衡量自变量的预测能力，从而进行特征选择。</li>
+</ul>
+<h2 id="讨论"><a href="#讨论" class="headerlink" title="讨论"></a>讨论</h2><p>评分卡是舶来品，对信用基础数据有一定要求，信用评分的建模过程更多地是分析的过程（而不是模型拟合的过程），也正因此，对模型参数的估计等等内容似乎并不做太多的学习，而把主要的精力集中于研究各个自变量与目标变量的关系，在此基础上对自变量做筛选和编码，最终再次评估模型的预测效果，并且对模型的各个自变量的效用作出相应的评价。<br>WOE 和 IV应用有局限性，这两个值的资料都是信用评分模型，机器学习的相关资料中很少关于这两个值的应用。<br>虽然网上到处都是神经网络、xgboost的文章，但当下的建模过程中（至少在金融风控领域）并没有完全摆脱logistic模型，原因大致有以下几点：<br>（1） logistic模型客群变化的敏感度不如其他高复杂度模型，因此稳健更好，鲁棒性更强。<br>（2）模型直观。系数含义好阐述、易理解。对金融领域高管以及银行出身的建模专家，变量系数可以跟他们的业内知识做交叉验证，更容易让人信服。<br>（3） 也是基于2的模型直观性，当模型效果衰减的时候，logistic模型能更好的诊断病因。</p>
+<p>参考资料：<br><a href="https://www.jianshu.com/p/9eea3e8828b3" target="_blank" rel="noopener">https://www.jianshu.com/p/9eea3e8828b3</a><br><a href="https://blog.csdn.net/kevin7658/article/details/50780391" target="_blank" rel="noopener">https://blog.csdn.net/kevin7658/article/details/50780391</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+  
+        <div class="post-tags">
+          
+            <a href="/tags/Score-card/" rel="tag"># Score card</a>
+          
+            <a href="/tags/Logistic/" rel="tag"># Logistic</a>
+          
+        </div>
+      
+  <div>
+    
+      
+
+
+     <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+     <div style="text-align:center;font-size:14px;font-weight:blod"><i class="fa fa-copyright"></i>友情提示: 转载请保留原文链接及作者。</div>
+<br/>
+
+    
+  </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感谢支持、勇于创作</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赞赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/wechat-reward-img.jpg" alt="flary WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/alipay-reward-img.jpg" alt="flary Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+         
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/08/深度学习的基础-从人工神经网络开始.html" rel="next" title="深度学习基础 - 从人工神经网络开始">
+                <i class="fa fa-chevron-left"></i> 深度学习基础 - 从人工神经网络开始
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/05/机器学习-模型评估与选择（1）.html" rel="prev" title="机器学习-模型评估与选择（1）">
+                机器学习-模型评估与选择（1） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMjkxNS85NDc2"></div>
+    
+	
+  </div>
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="flary" />
+          <p class="site-author-name" itemprop="name">flary</p>
+          <p class="site-description motion-element" itemprop="description">记录学习、记录成长</p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/flarywu" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://weibo.com/flarygogo" target="_blank" title="weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/flary-53/activities" target="_blank" title="zhihu">
+                  
+                    <i class="fa fa-fw fa-battery-3"></i>
+                  
+                  zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#评分卡是什么样子的？"><span class="nav-number">2.</span> <span class="nav-text">评分卡是什么样子的？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于Logistic回归的标准评分卡"><span class="nav-number">3.</span> <span class="nav-text">基于Logistic回归的标准评分卡</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WOE-和-IV-详解"><span class="nav-number">4.</span> <span class="nav-text">WOE 和 IV 详解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#WOE"><span class="nav-number">4.1.</span> <span class="nav-text">WOE</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#WOE-和-OR的关系"><span class="nav-number">4.2.</span> <span class="nav-text">WOE 和 OR的关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IV的计算"><span class="nav-number">4.3.</span> <span class="nav-text">IV的计算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IV的极端情况以及处理方式"><span class="nav-number">4.4.</span> <span class="nav-text">IV的极端情况以及处理方式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WOE和IV的意义何在？"><span class="nav-number">5.</span> <span class="nav-text">WOE和IV的意义何在？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#变量替换为WOE值意义"><span class="nav-number">5.1.</span> <span class="nav-text">变量替换为WOE值意义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IV意义"><span class="nav-number">5.2.</span> <span class="nav-text">IV意义</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#讨论"><span class="nav-number">6.</span> <span class="nav-text">讨论</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-tint"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">flary</span>
+</div>
+ <!--以下3行为一条竖线和Coding Page-->
+  <div class="powered-by">  
+  <span>Hosted by <a href="https://pages.coding.me" style="font-weight: bold">Coding Pages</a></span>
+  </div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io" rel="external nofollow">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next" rel="external nofollow">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.1.3/jquery.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid="></script>
+      <!-- UY END -->
+  
+
+
+
+
+   
+     
+   
+  
+       <!-- UY BEGIN -->
+       <script type="text/javascript">
+          (function(d, s) {
+              var j, e = d.getElementsByTagName(s)[0];
+              if (typeof LivereTower === 'function') { return; }
+              j = d.createElement(s);
+              j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+              j.async = true;
+              e.parentNode.insertBefore(j, e);
+          })(document, 'script');
+       </script>
+       <noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+       <!-- UY END -->
+   
+ 
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+
+</body>
+</html>

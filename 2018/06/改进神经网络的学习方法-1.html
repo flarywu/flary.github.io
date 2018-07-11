@@ -1,0 +1,1153 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Neucha:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+  
+
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Neural Networks," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="flary's blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="本资料摘自于《神经网络与深度学习》一文，总结了一下其中提到的改进学习的方法，方法仅仅覆盖了大量已经在神经网络中研究发展出的技术的一点点内容。掌握了这些关键技术不仅仅对这些技术本⾝的理解很有用，而且会深化对使用神经网络时会遇到哪些问题的理解。  交叉熵代价函数众所周知，神经元是通过改变权重和偏置，并以⼀个代价函数的偏导数（$\partial C/\partial w$ 和 $\partial C/">
+<meta name="keywords" content="Neural Networks">
+<meta property="og:type" content="article">
+<meta property="og:title" content="改进神经网络的学习方法(1)">
+<meta property="og:url" content="http://yoursite.com/child/2018/06/改进神经网络的学习方法-1.html">
+<meta property="og:site_name" content="flary&#39;s blog">
+<meta property="og:description" content="本资料摘自于《神经网络与深度学习》一文，总结了一下其中提到的改进学习的方法，方法仅仅覆盖了大量已经在神经网络中研究发展出的技术的一点点内容。掌握了这些关键技术不仅仅对这些技术本⾝的理解很有用，而且会深化对使用神经网络时会遇到哪些问题的理解。  交叉熵代价函数众所周知，神经元是通过改变权重和偏置，并以⼀个代价函数的偏导数（$\partial C/\partial w$ 和 $\partial C/">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/img/deeplearning/交叉熵1.png">
+<meta property="og:image" content="http://yoursite.com/img/deeplearning/overfit1.png">
+<meta property="og:image" content="http://yoursite.com/img/deeplearning/overfit2.png">
+<meta property="og:image" content="http://yoursite.com/img/deeplearning/规范化1.png">
+<meta property="og:image" content="http://yoursite.com/img/deeplearning/规范化2.png">
+<meta property="og:image" content="http://yoursite.com/img/deeplearning/dropout1.png">
+<meta property="og:image" content="http://yoursite.com/img/deeplearning/dropout2.png">
+<meta property="og:image" content="http://yoursite.com/img/deeplearning/weight_init1.png">
+<meta property="og:image" content="http://yoursite.com/img/deeplearning/weight_init2.png">
+<meta property="og:image" content="http://yoursite.com/img/deeplearning/weight_init3.png">
+<meta property="og:image" content="http://yoursite.com/img/deeplearning/weight_init4.png">
+<meta property="og:image" content="http://yoursite.com/img/deeplearning/learning_rate1.png">
+<meta property="og:updated_time" content="2018-07-11T07:34:38.446Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="改进神经网络的学习方法(1)">
+<meta name="twitter:description" content="本资料摘自于《神经网络与深度学习》一文，总结了一下其中提到的改进学习的方法，方法仅仅覆盖了大量已经在神经网络中研究发展出的技术的一点点内容。掌握了这些关键技术不仅仅对这些技术本⾝的理解很有用，而且会深化对使用神经网络时会遇到哪些问题的理解。  交叉熵代价函数众所周知，神经元是通过改变权重和偏置，并以⼀个代价函数的偏导数（$\partial C/\partial w$ 和 $\partial C/">
+<meta name="twitter:image" content="http://yoursite.com/img/deeplearning/交叉熵1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"right","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/child/2018/06/改进神经网络的学习方法-1.html"/>
+
+
+
+
+
+  <title> 改进神经网络的学习方法(1) | flary's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?209ead5acf7ef7ede1674e500c4430d5";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta custom-logo">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">flary's blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <h1 class="site-subtitle" itemprop="description">flary的个人博客</h1>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="search.placeholder" spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/child/2018/06/改进神经网络的学习方法-1.html">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="flary">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="flary's blog">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="flary's blog" src="/images/avatar.jpg">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+            
+            
+              
+                改进神经网络的学习方法(1)
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-20T15:11:45+08:00">
+                2018-06-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Deep-Learning/" itemprop="url" rel="index">
+                    <span itemprop="name">Deep Learning</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+         
+		<span class="post-time">
+	   &nbsp; | &nbsp;
+           <span class="post-meta-item-icon">
+             <i class="fa fa-file-word-o" aria-hidden="true"></i>
+           </span>
+           <span class="post-meta-item-text">字数统计:</span>
+           <span class="post-count">5,033 字</span>
+           
+         </span>
+	  
+      <span class="post-time">
+	   &nbsp; | &nbsp;
+           <span class="post-meta-item-icon">
+             <i class="fa fa-clock-o" aria-hidden="true"></i>
+           </span>
+           <span class="post-meta-item-text">阅读时长:</span>
+           <span class="post-count">18 分钟</span>
+           
+         </span>
+         </span>
+          
+
+		 
+		 
+          
+ 
+        
+
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>本资料摘自于《神经网络与深度学习》一文，总结了一下其中提到的改进学习的方法，方法仅仅覆盖了大量已经在神经网络中研究发展出的技术的一点点内容。掌握了这些关键技术不仅仅对这些技术本⾝的理解很有用，而且会深化对使用神经网络时会遇到哪些问题的理解。</p>
+</blockquote>
+<h3 id="交叉熵代价函数"><a href="#交叉熵代价函数" class="headerlink" title="交叉熵代价函数"></a>交叉熵代价函数</h3><p>众所周知，神经元是通过改变权重和偏置，并以⼀个代价函数的偏导数（$\partial C/\partial w$ 和 $\partial C/\partial b$）决定的速度学习。所以，我们在说“学习慢”时，实际上就是说这些偏导数很小。理解他们为何这么小就是我们面临的挑战。为了理解这些，让我们计算偏导数看看。二次代价函数如下：</p>
+<script type="math/tex; mode=display">C(w,b) = \frac{1}{2n}\sum_{x}||y(x) - a||^2</script><p>假设有个小例⼦，包含一个只有一个输入的神经元，让输入1转化为0。则对应的二次代价函数为：</p>
+<script type="math/tex; mode=display">C = \frac{(y-a)^2}{2}</script><p>其中a是神经元的输出，训练输入为$x = 1$，$y = 0$则是目标输出。显式地使用权重和偏置来表达这个，我们有$a = \sigma(z)$，其中$z = wx + b$。使用链式法则来求权重和偏置的偏导数就有：</p>
+<script type="math/tex; mode=display">\frac{\partial C}{\partial w} = (a-y)  \sigma \prime(z)x = a\sigma \prime(z)</script><script type="math/tex; mode=display">\frac{\partial C}{\partial b} = (a-y)  \sigma \prime(z) = a\sigma \prime(z)</script><p>当神经网络的激活函数是sigmoid函数时，函数曲线在取值为1的附近变得相当平，所以$ \sigma \prime(z)$就很小了。因此上式的偏导数会非常小。这其实就是学习缓慢的原因所在。这种学习速度下降的原因实际上也是更加一般的神经网络学习缓慢的原因，并不仅仅是在这个特例中特有的。</p>
+<p>那么我们如何解决这个问题呢？</p>
+<p>假设，我们现在要训练一个包含若干输入变量的的神经元，目标输出y都是0或1。神经元的输出$a = \sigma(z)$<br><img src="/img/deeplearning/交叉熵1.png" alt="Alt text"><br>其中：</p>
+<script type="math/tex; mode=display">z =\sum_{j}w_jx_j + b</script><p>是输入的带权和，如下定义这个神经元的交叉熵代价函数：</p>
+<script type="math/tex; mode=display">C = -\frac{1}{n}\sum_{x}[y \ln a + (1-y)\ln(1-a)]</script><p>其中n是训练数据的总数，求和是在所有的训练输入x上进行的，y是对应的目标输出。</p>
+<p>将交叉熵看做是代价函数有两点原因：</p>
+<ul>
+<li>它是非负的，C &gt; 0。</li>
+<li>若对于所有的训练输入x，神经元实际的输出接近目标值，那么交叉熵将接近0。</li>
+</ul>
+<p>但是交叉熵代价函数有一个比二次代价函数更好的特性就是它避免了学习速度下降的<br>问题。为了弄清楚这个情况，我们来算算交叉熵函数关于权重的偏导数，得到：</p>
+<script type="math/tex; mode=display">\frac{\partial C}{\partial w_j} = \frac{1}{n} \sum_{x} \frac{\sigma \prime(z)x_j}{\sigma(z)(1-\sigma(z))} (\sigma(z) - y)</script><p>根据$\sigma(z) = 1/(1+e^{-z})$的定义，可以得到$\sigma \prime(z) = \sigma(z)(1-\sigma(z))$。代入上式可得：</p>
+<script type="math/tex; mode=display">\frac{\partial C}{\partial w_j} = \frac{1}{n} \sum_{x} x_j(\sigma(z) - y)</script><p>这是一个优美的公式。它告诉我们权重学习的速度受到$\sigma(z) - y$影响，也就是输出中的误差的控制。更大的误差，更快的学习速度，这是我们直觉上期待的效果。特别地，这个代价函数避免了像在二次代价函数中求$\sigma \prime(z)$导致学习缓慢的问题。类似的方法，我们可以计算出关于偏置的偏导数：</p>
+<script type="math/tex; mode=display">\frac{\partial C}{\partial b} = \frac{1}{n} \sum_{x} (\sigma(z) - y)</script><p>那么我们应该在什么时候用交叉熵来替换⼆次代价函数？实际上，如果输出神经元是S型神经元(如sigmoid函数)时，交叉熵一般都是更好的选择。</p>
+<p>注意：</p>
+<ul>
+<li>对其他的问题（如回归问题）y 可以取0和1之间的中间值的。其实，交叉熵对所有训练输入在$\sigma(z) = y$时仍然是最小化的。此时交叉熵的表示是：<script type="math/tex; mode=display">C = -\frac{1}{n}\sum_{x}[y \ln y + (1-y)\ln(1-y)]</script>其中$-[y \ln y + (1-y)\ln(1-y)]$有时候被称为二元熵。</li>
+<li>交叉熵避免了学习缓慢的问题，不仅仅是在一个神经元上，且在多层多元网络上都起作。这个分析过程稍作变化对偏置也是一样的。</li>
+<li>如果输出神经元是线性的，不再是S型函数作用的结果，那么二次代价函数不再会导致学习速度下降的问题。在此情形下，二次代价函数就是一种合适的选择。</li>
+</ul>
+<p>使用交叉熵来对MNIST数字进行分类：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> mnist_loader</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>training_data, validation_data, test_data = mnist_loader.load_data_wrapper()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> network2</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>net = network2.Network([<span class="number">784</span>, <span class="number">30</span>, <span class="number">10</span>], cost=network2.CrossEntropyCost)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>net.large_weight_initializer()</span><br><span class="line"><span class="comment"># 学习30次迭代期，小批量数据大小为10，学习速率 = 0.5</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>net.SGD(training_data, <span class="number">30</span>, <span class="number">10</span>, <span class="number">0.5</span>, evaluation_data=test_data,monitor_evaluation_accuracy=<span class="keyword">True</span>)</span><br><span class="line"><span class="comment"># 最高准确率：</span></span><br><span class="line"><span class="comment"># Epoch 26 training complete</span></span><br><span class="line"><span class="comment"># Accuracy on evaluation data: 9550 / 10000</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="softmax"><a href="#softmax" class="headerlink" title="softmax"></a>softmax</h3><p>softmax的想法其实就是为神经网络定义一种新式的输出层。开始时和S型层一样的，首先计算带权输入z，不过不会使用S型函数作用获得输出，而是用一个叫softmax的函数作用在z上获得输出，根据这个函数，第j个神经元的输出就是：</p>
+<script type="math/tex; mode=display">a_j^L = \frac{e^{z_j^L}}{\sum_k e^{z_j^L}}</script><p>其中，分母中的求和是在所有输出神经元上进行的，不难看出，输出激活值都是正数，而且激活值加起来正好为1。</p>
+<p>因此，softmax层的输出可以被看做是一个概率分布。这样的效果很令人满意，在很多问题中，能够将输出激活值a理解为网络对于正确输出为的概率的估计是非常方便的。</p>
+<p>softmax的一些性质：</p>
+<ul>
+<li>具有单调性。</li>
+<li>非局部性，任何特定的输出激活值依赖所有带权输入。</li>
+</ul>
+<p>作为一种更加通用的视角，softmax + 对数似然代价函数的组合，更加适用于那些需要将输出激活值解释为概率的场景。</p>
+<h3 id="过拟合和规范化"><a href="#过拟合和规范化" class="headerlink" title="过拟合和规范化"></a>过拟合和规范化</h3><p>过度拟合是神经网络的一个主要问题。这在现代网络中特别正常，因为网络权重和偏置数量巨大。为了高效地训练，我们需要一种检测过度拟合是不是发生的技术，这样我们不会过度训练，并且我们也想要找到一些技术来降低过度拟合的影响。看一个例子：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> mnist_loader</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>training_data, validation_data, test_data =  mnist_loader.load_data_wrapper()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> network2</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>net = network2.Network([<span class="number">784</span>, <span class="number">30</span>, <span class="number">10</span>], cost=network2.CrossEntropyCost)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>net.large_weight_initializer()</span><br><span class="line"><span class="comment"># 学习400次迭代期，小批量数据大小为10，学习速率 = 0.5，只用1000幅图像</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>net.SGD(training_data[:<span class="number">1000</span>], <span class="number">400</span>, <span class="number">10</span>, <span class="number">0.5</span>, evaluation_data=test_data, monitor_evaluation_accuracy=<span class="keyword">True</span>, monitor_training_cost=<span class="keyword">True</span>)</span><br></pre></td></tr></table></figure></p>
+<p>我们可以画出当网络学习时代价变化的情况：<br><img src="/img/deeplearning/overfit1.png" alt="Alt text"><br>以及分类准确率在测试集上的表现：<br><img src="/img/deeplearning/overfit2.png" alt="Alt text"><br>可以看出，网络在280迭代期后就过度拟合（overfitting）或者过度训练了。</p>
+<p>检测过度拟合的明显方法是—— 跟踪测试数据集合上的准确率随训练变化情况。如果我们看到测试数据上的准确率不再提升，那么我们就停止训练。使用验证集检验模型是否过拟合是一般的做法。</p>
+<h4 id="L2规范化"><a href="#L2规范化" class="headerlink" title="L2规范化"></a>L2规范化</h4><p>一般来说，最好的降低过拟合的方式之一是增加训练样本量，有了足够的训练数据，就算是一个规模非常大的网络也不太容易过拟合，但不幸的是，训练数据其实是很难或者很昂贵的资源，所以这不是一种太切合实际的选择。</p>
+<p>其实，还有其他的技术能够缓解过拟合，即使我们只有一个固定的网络和固定的训练集合，而这种技术就是规范化。最为常见的规范化手段被称为权重衰减或者L2规范化。L2 规范化的想法是增加⼀个额外的项到代价函数上，这个项叫做规范化项。下面是规范化的交叉熵代价函数：</p>
+<script type="math/tex; mode=display">C = -\frac{1}{n}\sum_{x_j}[y_j \ln a_j^L + (1-y_j)\ln(1-a_j^L)]+\frac{\lambda}{2n}\sum_w w^2</script><p>其中，第一项就是常规的交叉熵表达式，第二项加入的就是所有权重的平方的和，然后使用一个因子进行量化调整，其中 $\lambda&gt; 0$ 可以称为规范化参数。（当然，对其他的代价函数也可以进⾏规范化）。都可以写成以下形式：</p>
+<script type="math/tex; mode=display">C=C_0 + \frac{\lambda}{2n}\sum_w w^2</script><p>现在，对于这样的规范化为何能够减轻过度拟合还不是很清楚，首先我们需要知道如何计算对网络中所有权重和偏置的偏导数：</p>
+<script type="math/tex; mode=display">\frac{\partial C}{\partial w}  = \frac{\partial C_0}{\partial w} + \frac{\lambda}{n} w</script><script type="math/tex; mode=display">\frac{\partial C}{\partial b}  = \frac{\partial C_0}{\partial b}</script><p>权重的学习规则就变成：</p>
+<script type="math/tex; mode=display">w = w - \eta \frac{\partial C_0}{\partial w} - \frac{\eta \lambda}{n} w = (1- \frac{\eta \lambda}{n}) w - \eta \frac{\partial C_0}{\partial w}</script><p>这正和通常的梯度下降学习规则相同，除了通过一个因子$1- \frac{\eta \lambda}{n}$重新调整了权重w。这种调整有时被称为权重衰减，因为它使得权重变小了。通常小的权重在某种程度上，意味着更低的复杂性，也就对数据给出了一种更简单却更强大的解释，因此应该优先选择。</p>
+<p>规范化交叉熵代价函数的例子：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> mnist_loader</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>training_data, validation_data, test_data = mnist_loader.load_data_wrapper()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> network2</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>net = network2.Network([<span class="number">784</span>, <span class="number">30</span>, <span class="number">10</span>], cost=network2.CrossEntropyCost)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>net.large_weight_initializer()</span><br><span class="line"><span class="comment"># 30 个隐藏神经元、小批量数据大小为10，学习速率为0.5，400个迭代期，规范化参数lmbda=0.1</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>net.SGD(training_data[:<span class="number">1000</span>], <span class="number">400</span>, <span class="number">10</span>, <span class="number">0.5</span>, evaluation_data=test_data, lmbda = <span class="number">0.1</span>, monitor_evaluation_cost=<span class="keyword">True</span>, monitor_evaluation_accuracy=<span class="keyword">True</span>, monitor_training_cost=<span class="keyword">True</span>, monitor_training_accuracy=<span class="keyword">True</span>)</span><br></pre></td></tr></table></figure></p>
+<p>训练集上的代价函数持续下降：<br><img src="/img/deeplearning/规范化1.png" alt="Alt text"><br>测试集上的准确率在整个400迭代期内持续增加：<br><img src="/img/deeplearning/规范化2.png" alt="Alt text"><br>显然，规范化的使.能够解决过度拟合的问题。而且，准确率相当高了，相较于之前的82.27%，最高处达到了87.1%。</p>
+<h4 id="规范化的的其他技术"><a href="#规范化的的其他技术" class="headerlink" title="规范化的的其他技术"></a>规范化的的其他技术</h4><p>除了L2 外还有很多规范化技术。实际上，正是由于数量众多，也不会将所有的都列举出来。在本节，简要地给出三种减轻过度拟合的其他的方法：L1 规范化、弃权和人为增加训练样本。</p>
+<p><strong>L1 规范化</strong>： 这个方法是在未规范化的代价函数上加上一个权重绝对值的和：</p>
+<script type="math/tex; mode=display">C = C_0 + \frac{\lambda}{n} \sum_w |w|</script><p>对应*L1 规范化代价函数的偏导数有：</p>
+<script type="math/tex; mode=display">\frac{\partial C}{\partial w}  = \frac{\partial C_0}{\partial w} + \frac{\lambda}{n} sgn(w)</script><p>其中sgn(w) 就是w 的正负号，即w是正数时为+1，w为负数时为-1。使用这个表达式，我们可以轻易地对反向传播进行修改，从而使用基于L1规范化的随机梯度下降进行学习。对L1规范化的网络进行更新的规则就是：</p>
+<script type="math/tex; mode=display">w = w - \eta \frac{\partial C_0}{\partial w} - \frac{\eta \lambda}{n} sgn(w)</script><p>L1和L2两种情形下，规范化的效果就是缩小权重。这符合我们的直觉，两种规范化都惩罚大的权重。但权重缩小的方式不同。在L1规范化中，权重通过一个常量向0进行缩小。在L2规范化中，权重通过一个和w成比例的量进行缩小的。</p>
+<p>所以，当一个特定的权重绝对值|w|很大时，L1规范化的权重缩小得远比L2规范化要小得多。相反，当一个特定的权重绝对值|w|很小时，L1规范化的权重缩小得要比L2规范化大得多。最终的结果就是，<strong>L1规范化倾向于聚集网络的权重在相对少量的高重要度连接上，而其他权重就会被驱使向0接近</strong>。</p>
+<blockquote>
+<p>注意：我在上面的讨论中其实忽略了一个问题—— 在w = 0 的时候，w偏导数未定义义。原因在于函数|w|在w = 0 时有个“直角”，事实上，导数是不存的。不过没关系，我们要做的就是应用通常的（无规范化的）随机梯度下降的规则在w = 0处，更确切地说，我们约定sgn(0) = 0。</p>
+</blockquote>
+<p><strong>弃权</strong>： 弃权（Dropout）是一种相当激进的技术。和L1、L2规范化不同，弃权技术并不依赖对代价函数的修改。而是，在弃权中，我们改变了网络本身，先描述一下弃权基本的工作机制。我们尝试训练一个网络：<br><img src="/img/deeplearning/dropout1.png" alt="Alt text"></p>
+<p>假设我们有一个训练数据x和对应的目标输出y。通常我们会通过在网络中前向传播x，然后进行反向传播来确定对梯度的贡献。使用弃权技术，这个过程就改了。我们会从随机（临时）地<strong>删除网络中的一半的隐藏神经元</strong>开始，同时让输入层和输出层的神经元保持不变。在此之后，我们会得到最终如下线条所示的网络。注意那些被弃权的神经元，即那些临时被删除的神经元，用虚圈表示在图中：<br><img src="/img/deeplearning/dropout2.png" alt="Alt text"></p>
+<p>我们前向传播输入x，通过修改后的网络，然后反向传播结果，在一个小批量数据样本上进行这些步骤后，对有关的权重和偏置进行更新，重置弃权的神经元，然后重复上述过程，最终网络会学到一个权重和偏置的集合。当然，这些权重和偏置也是在一半的隐藏神经元被弃权的情形下学到的。当实际运行整个网络时，是指两倍的隐藏神经元将会被激活。为了补偿这个，我们将从隐藏神经元出去的权重减半。</p>
+<blockquote>
+<p>为什么弃权的方法能够进行规范化呢？启发式地看，当我们弃权掉不同的神经元集合时，有点像我们在训练不同的神经网络。所以，弃权过程就如同大量不同网络的效果的平均那样。不同的网络会以不同的方式过度拟合了，所以，弃权过的网络的效果会减轻过度拟合。<strong>弃权技术在训练大规模深度网络时尤其有效，这样的网络中过度拟合问题经常特别突出</strong>。</p>
+</blockquote>
+<p><strong>人为扩展训练数据</strong>：获取更多的训练样本其实是很好的想法。不幸的是，这个方法代价很.，在实践中常常是很难达到的。不过，还有一种方法能够获得类似的效果，那就是人为扩展训练数据，比如，旋转、转换、扭曲图像，对于语音识别，可以通过增加背景噪声来扩展数据等。</p>
+<p>一般而言，准确率会随着更多的数据而不断增加。当然，在训练的后期，我们会发现学习已经接近饱和状态。</p>
+<h3 id="权重初始化"><a href="#权重初始化" class="headerlink" title="权重初始化"></a>权重初始化</h3><p>创建了神经网络后，我们需要进行权重和偏置的初始化。一种方式就是根据<strong>独立高斯随机变量</strong>来选择权重和偏置，其被归一化为均值为0，标准差1。这个方法还不错，但是非常特别，所以值得去重新探讨它，看看是否能寻找一些更好的方式来设置初始的权重和偏置，这也许能帮助我们的网络学习得更快。结果表明，我们可以使用比归一化的高斯分布做得更好的方法。</p>
+<p>假设我们使用一个有大量输入神经元的网络，比如说1000个，并且训练输入x，其中一半的输入神经元值为1，另一半为0，已经使用了归一化的高斯分布初始化了连接隐藏层的权重，考虑隐藏神经元输入的带权和：</p>
+<script type="math/tex; mode=display">z = \sum_j w_jx_j + b</script><p>其中500个项消去了，因为对应的输入为0。所以z是遍历总共501个归一化的高斯随机变量的和，包含500个权重项和额外的1个偏置项。因此z本身是一个均值为0，标准差为$\sqrt {501}$ 的高斯分布。即，z是一个非常宽的高斯分布，分布图形完全不是很尖的形状，|z|会变得很大，这样隐藏神经元的输出$\sigma(z)$ 就会接近1或者0，也就表示我们的隐藏神经元会饱和。<br><img src="/img/deeplearning/weight_init1.png" alt="Alt text"></p>
+<p>所以当出现这样的情况时，在权重中进行微小的调整仅仅会给隐藏神经元的激活值带来极其微弱的改变。而这种微弱的改变也会影响网络中剩下的神经元，然后会带来相应的代价函数的改变。结果就是，这些权重在我们进行梯度下降算法时会学习得非常缓慢。</p>
+<p><strong>解决方法</strong>：假设我们有一个n个输入权重的神经元，使用均值0，标准差$1/\sqrt n$的高斯分布初始化这些权重，也就是说会向下挤压图形，让神经元更不可能饱和，继续使用均值0标准差1的高斯分布对偏置进行初始化。</p>
+<p>继续使用500个值为0的输入和500 个值为1的输入，很容易证明此时隐藏神经元输入的带权和z服从均值0，标准差为$\sqrt {3/2}$ 的高斯分布，这要比以前有更尖锐的峰值。<br><img src="/img/deeplearning/weight_init2.png" alt="Alt text"><br>这样的一个神经元更不可能饱和，因此也不太可能遇到学习速度下降的问题。</p>
+<p>MNIST 数字分类任务，使用30个隐藏神经元，小批量数据的大小为10，规范化参数5.0，然后是交叉熵代价函数，分别使用新旧权重初始化方法训练：<br><img src="/img/deeplearning/weight_init3.png" alt="Alt text"><br>同样的情况使用100个隐藏神经元，得到：<br><img src="/img/deeplearning/weight_init4.png" alt="Alt text"></p>
+<p><strong>权重初始化不仅仅能够带来训练速度的加快，有时候在最终性能上也有所提升。</strong></p>
+<h3 id="如何选择神经网络的超参数"><a href="#如何选择神经网络的超参数" class="headerlink" title="如何选择神经网络的超参数"></a>如何选择神经网络的超参数</h3><p>直到现在，我们还没有解释对诸如学习速率 $\eta$，规范化参数 $\lambda$ 等等超参数选择的方法。</p>
+<p><strong>宽泛策略</strong>： 在使用神经网络来解决新的问题时，一个挑战就是获得任何一种非寻常的学习，也就是说，达到比随机的情况更好的结果。这个实际上会很困难，尤其是遇到一种新类型的问题时。现在我们看看一些具体的设置超参数的推荐。</p>
+<p><strong>学习速率</strong>：假设我们运行了三个不同学习速率（0.025、0.25、2.5）的MNIST 网络，其他参数一致。<br><img src="/img/deeplearning/learning_rate1.png" alt="Alt text"></p>
+<p>我们可以如下设置学习速率。首先，<strong>找到学习速率阈值的估计</strong>，它使得在训练数据上的代价立即开始下降而非震荡或者增加，这个估计并不需要太过精确，可以估计这个值的量级，比如说从等于0.01开始。</p>
+<p>如果代价在训练前面若干回合开始下降，就可以逐步增大学习速率，比如0.1、1.0，直到若干回合代价开始震荡或者增加。相反，如果代价在学习速率等于0.01时就开始震荡或增加，那就减小它，比如0.001、0.0001，直到代价开始下降。</p>
+<p>显然， 学习速率实际值不应该比阈值大。实际上，更应该使用稍微小点的值，例如，<strong>阈值的一半</strong>这样的选择。</p>
+<blockquote>
+<p>为何对学习速率要用训练代价来选择呢，而其他超参数用验证集？<br>原因就是其他的超参数倾向于提升最终的测试集上的分类准确率，所以将他们通过验证准确率来选择更合理一些。然而，学习速率仅仅是偶然地影响最终的分类准确率的，学习速率主要的目的是控制梯度下降的步长，监控训练代价是最好的检测步长过大的方法。</p>
+</blockquote>
+<p><strong>使用提前停止来确定训练的迭代期数量：</strong>提前停止表示在每个回合的最后，都要计算验证集上的准确率，当准确率不再上升，就终止它。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+  
+        <div class="post-tags">
+          
+            <a href="/tags/Neural-Networks/" rel="tag"># Neural Networks</a>
+          
+        </div>
+      
+  <div>
+    
+      
+
+
+     <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+     <div style="text-align:center;font-size:14px;font-weight:blod"><i class="fa fa-copyright"></i>友情提示: 转载请保留原文链接及作者。</div>
+<br/>
+
+    
+  </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感谢支持、勇于创作</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赞赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/wechat-reward-img.jpg" alt="flary WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/alipay-reward-img.jpg" alt="flary Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+         
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/机器学习-模型评估与选择（1）.html" rel="next" title="机器学习-模型评估与选择（1）">
+                <i class="fa fa-chevron-left"></i> 机器学习-模型评估与选择（1）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMjkxNS85NDc2"></div>
+    
+	
+  </div>
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="flary" />
+          <p class="site-author-name" itemprop="name">flary</p>
+          <p class="site-description motion-element" itemprop="description">记录学习、记录成长</p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/flarywu" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://weibo.com/flarygogo" target="_blank" title="weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/flary-53/activities" target="_blank" title="zhihu">
+                  
+                    <i class="fa fa-fw fa-battery-3"></i>
+                  
+                  zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#交叉熵代价函数"><span class="nav-number">1.</span> <span class="nav-text">交叉熵代价函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#softmax"><span class="nav-number">2.</span> <span class="nav-text">softmax</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#过拟合和规范化"><span class="nav-number">3.</span> <span class="nav-text">过拟合和规范化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#L2规范化"><span class="nav-number">3.1.</span> <span class="nav-text">L2规范化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#规范化的的其他技术"><span class="nav-number">3.2.</span> <span class="nav-text">规范化的的其他技术</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#权重初始化"><span class="nav-number">4.</span> <span class="nav-text">权重初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何选择神经网络的超参数"><span class="nav-number">5.</span> <span class="nav-text">如何选择神经网络的超参数</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-tint"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">flary</span>
+</div>
+ <!--以下3行为一条竖线和Coding Page-->
+  <div class="powered-by">  
+  <span>Hosted by <a href="https://pages.coding.me" style="font-weight: bold">Coding Pages</a></span>
+  </div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io" rel="external nofollow">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next" rel="external nofollow">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.1.3/jquery.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid="></script>
+      <!-- UY END -->
+  
+
+
+
+
+   
+     
+   
+  
+       <!-- UY BEGIN -->
+       <script type="text/javascript">
+          (function(d, s) {
+              var j, e = d.getElementsByTagName(s)[0];
+              if (typeof LivereTower === 'function') { return; }
+              j = d.createElement(s);
+              j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+              j.async = true;
+              e.parentNode.insertBefore(j, e);
+          })(document, 'script');
+       </script>
+       <noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+       <!-- UY END -->
+   
+ 
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+
+</body>
+</html>
