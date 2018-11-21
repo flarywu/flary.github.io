@@ -72,7 +72,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Algorithm,Parameter Tuning," />
+  <meta name="keywords" content="Dynamic Pricing," />
 
 
 
@@ -90,18 +90,35 @@
 
 
 
-<meta name="description" content="简介 如果你的预测建模表现的不尽人意，请使用XGBoost。 XGBoost算法已经成为许多数据科学家的终极武器。这是一个非常复杂的算法，足以处理各种不规则的数据。 XGBoost算法是梯度提升算法（GBM）的改进版，使用XGBoost构建模型非常简单。但是，使用XGBoost改善模型很困难，这个算法包含很多参数。因此要提升模型的效果，调参尤为关键。但是，要说哪组参数要怎么调节、为了得到最佳效果参">
-<meta name="keywords" content="Algorithm,Parameter Tuning">
+<meta name="description" content="随着饭点儿业务流量不断的提升，预购产品在未来可期范围必将深入行业，技术的支撑应该提前做出响应，在此和大家一起探讨一下基于动态定价思路的折扣推荐方案。   饭点儿-最新业务发展基本情况  饭点儿-预购产品示意图：   什么是动态定价？动态定价(Dynamic pricing)是指企业根据市场需求和自身供应能力，以不同的价格将同一产品适时地销售给不同的消费者或不同的细分市场，以实现收益最大化的策略。">
+<meta name="keywords" content="Dynamic Pricing">
 <meta property="og:type" content="article">
-<meta property="og:title" content="XGBoost-参数调优">
-<meta property="og:url" content="http://yoursite.com/child/2017/05/XGBoost-参数调优.html">
+<meta property="og:title" content="动态定价-解读Airbnb使用的模型">
+<meta property="og:url" content="http://yoursite.com/child/2018/11/动态定价-解读Airbnb使用的模型.html">
 <meta property="og:site_name" content="flary&#39;s blog">
-<meta property="og:description" content="简介 如果你的预测建模表现的不尽人意，请使用XGBoost。 XGBoost算法已经成为许多数据科学家的终极武器。这是一个非常复杂的算法，足以处理各种不规则的数据。 XGBoost算法是梯度提升算法（GBM）的改进版，使用XGBoost构建模型非常简单。但是，使用XGBoost改善模型很困难，这个算法包含很多参数。因此要提升模型的效果，调参尤为关键。但是，要说哪组参数要怎么调节、为了得到最佳效果参">
+<meta property="og:description" content="随着饭点儿业务流量不断的提升，预购产品在未来可期范围必将深入行业，技术的支撑应该提前做出响应，在此和大家一起探讨一下基于动态定价思路的折扣推荐方案。   饭点儿-最新业务发展基本情况  饭点儿-预购产品示意图：   什么是动态定价？动态定价(Dynamic pricing)是指企业根据市场需求和自身供应能力，以不同的价格将同一产品适时地销售给不同的消费者或不同的细分市场，以实现收益最大化的策略。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-04-22T08:31:55.776Z">
+<meta property="og:image" content="http://yoursite.com/img/Dynamic-Pricing/饭点儿1.png">
+<meta property="og:image" content="http://yoursite.com/img/Dynamic-Pricing/饭点儿1.1.png">
+<meta property="og:image" content="http://yoursite.com/img/Dynamic-Pricing/饭点儿2.png">
+<meta property="og:image" content="http://yoursite.com/img/Dynamic-Pricing/饭点儿2.1.png">
+<meta property="og:image" content="http://yoursite.com/img/Dynamic-Pricing/饭点儿3.png">
+<meta property="og:image" content="http://yoursite.com/img/Dynamic-Pricing/airbnb1.png">
+<meta property="og:image" content="http://yoursite.com/img/Dynamic-Pricing/airbnb2.png">
+<meta property="og:image" content="http://yoursite.com/img/Dynamic-Pricing/airbnb3.png">
+<meta property="og:image" content="http://yoursite.com/img/Dynamic-Pricing/airbnb4.png">
+<meta property="og:image" content="http://yoursite.com/img/Dynamic-Pricing/airbnb5.png">
+<meta property="og:image" content="http://yoursite.com/img/Dynamic-Pricing/airbnb6.png">
+<meta property="og:image" content="http://yoursite.com/img/Dynamic-Pricing/airbnb7.png">
+<meta property="og:image" content="http://yoursite.com/img/Dynamic-Pricing/airbnb8.png">
+<meta property="og:image" content="http://yoursite.com/img/Dynamic-Pricing/airbnb9.png">
+<meta property="og:image" content="http://yoursite.com/img/Dynamic-Pricing/airbnb10.png">
+<meta property="og:image" content="http://yoursite.com/img/Dynamic-Pricing/airbnb11.png">
+<meta property="og:updated_time" content="2018-11-21T08:28:17.836Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="XGBoost-参数调优">
-<meta name="twitter:description" content="简介 如果你的预测建模表现的不尽人意，请使用XGBoost。 XGBoost算法已经成为许多数据科学家的终极武器。这是一个非常复杂的算法，足以处理各种不规则的数据。 XGBoost算法是梯度提升算法（GBM）的改进版，使用XGBoost构建模型非常简单。但是，使用XGBoost改善模型很困难，这个算法包含很多参数。因此要提升模型的效果，调参尤为关键。但是，要说哪组参数要怎么调节、为了得到最佳效果参">
+<meta name="twitter:title" content="动态定价-解读Airbnb使用的模型">
+<meta name="twitter:description" content="随着饭点儿业务流量不断的提升，预购产品在未来可期范围必将深入行业，技术的支撑应该提前做出响应，在此和大家一起探讨一下基于动态定价思路的折扣推荐方案。   饭点儿-最新业务发展基本情况  饭点儿-预购产品示意图：   什么是动态定价？动态定价(Dynamic pricing)是指企业根据市场需求和自身供应能力，以不同的价格将同一产品适时地销售给不同的消费者或不同的细分市场，以实现收益最大化的策略。">
+<meta name="twitter:image" content="http://yoursite.com/img/Dynamic-Pricing/饭点儿1.png">
 
 
 
@@ -129,13 +146,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/child/2017/05/XGBoost-参数调优.html"/>
+  <link rel="canonical" href="http://yoursite.com/child/2018/11/动态定价-解读Airbnb使用的模型.html"/>
 
 
 
 
 
-  <title> XGBoost-参数调优 | flary's blog </title>
+  <title> 动态定价-解读Airbnb使用的模型 | flary's blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -312,7 +329,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://yoursite.com/child/2017/05/XGBoost-参数调优.html">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/child/2018/11/动态定价-解读Airbnb使用的模型.html">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="flary">
@@ -336,7 +353,7 @@
             
             
               
-                XGBoost-参数调优
+                动态定价-解读Airbnb使用的模型
               
             
           </h2>
@@ -351,8 +368,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-05-22T11:14:53+08:00">
-                2017-05-22
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-11-21T16:02:10+08:00">
+                2018-11-21
               </time>
             
 
@@ -374,8 +391,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Machine-Learning/" itemprop="url" rel="index">
-                    <span itemprop="name">Machine Learning</span>
+                  <a href="/categories/Deep-Learning/" itemprop="url" rel="index">
+                    <span itemprop="name">Deep Learning</span>
                   </a>
                 </span>
 
@@ -400,7 +417,7 @@
              <i class="fa fa-file-word-o" aria-hidden="true"></i>
            </span>
            <span class="post-meta-item-text">字数统计:</span>
-           <span class="post-count">2,871 字</span>
+           <span class="post-count">3,365 字</span>
            
          </span>
 	  
@@ -410,7 +427,7 @@
              <i class="fa fa-clock-o" aria-hidden="true"></i>
            </span>
            <span class="post-meta-item-text">阅读时长:</span>
-           <span class="post-count">10 分钟</span>
+           <span class="post-count">12 分钟</span>
            
          </span>
          </span>
@@ -434,80 +451,134 @@
       
 
       
-        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><hr>
-<p>如果你的预测建模表现的不尽人意，请使用XGBoost。 XGBoost算法已经成为许多数据科学家的终极武器。这是一个非常复杂的算法，足以处理各种不规则的数据。</p>
-<p>XGBoost算法是梯度提升算法（GBM）的改进版，使用XGBoost构建模型非常简单。但是，使用XGBoost改善模型很困难，这个算法包含很多参数。因此要提升模型的效果，调参尤为关键。但是，要说哪组参数要怎么调节、为了得到最佳效果参数应该设为多少，诸如此类的问题，也是很难给出统一答案的。</p>
-<h2 id="XGBoost算法的优点"><a href="#XGBoost算法的优点" class="headerlink" title="XGBoost算法的优点"></a>XGBoost算法的优点</h2><hr>
+        <blockquote>
+<p>随着饭点儿业务流量不断的提升，预购产品在未来可期范围必将深入行业，技术的支撑应该提前做出响应，在此和大家一起探讨一下基于动态定价思路的折扣推荐方案。</p>
+</blockquote>
 <ul>
-<li><p><strong>正则化</strong><br>标准的GBM算法并没有正则项，正则项可以有效防止模型过拟合。<br>XGBoost也是以“正则化提升”技术而闻名。</p>
+<li><p>饭点儿-最新业务发展基本情况<br><img src="/img/Dynamic-Pricing/饭点儿1.png" alt="Alt text"><br><img src="/img/Dynamic-Pricing/饭点儿1.1.png" alt="Alt text"><br><img src="/img/Dynamic-Pricing/饭点儿2.png" alt="Alt text"><br><img src="/img/Dynamic-Pricing/饭点儿2.1.png" alt="Alt text"></p>
 </li>
-<li><p><strong>并行计算</strong><br>相比于GBM，XGBoost实现了并行处理，并且速度更快。<br>但众所周知，boosting不是一种串行的结构吗?怎么并行的？注意XGBoost的并行不是tree粒度的并行，XGBoost也是一次迭代完才能进行下一次迭代的（第t次迭代的代价函数里包含了前面t-1次迭代的预测值）。XGBoost的并行是在特征粒度上的。我们知道，决策树的学习最耗时的一个步骤就是对特征的值进行排序（因为要确定最佳分割点），xgboost在训练之前，预先对数据进行了排序，然后保存为block结构，后面的迭代中重复地使用这个结构，大大减小计算量。这个block结构也使得并行成为了可能，在进行节点的分裂时，需要计算每个特征的增益，最终选增益最大的那个特征去做分裂，那么各个特征的增益计算就可以开多线程进行。<br>XGBoost支持hadoop实现。</p>
-</li>
-<li><p><strong>高灵活性</strong><br>算法支持自定义目标函数形式和评价标准。<br>这为模型增加了全新的维度，所以我们的处理不会受到任何限制。</p>
-</li>
-<li><p><strong>处理缺失值</strong><br>XGBoost有一个内置的常规处理缺失值的方法<br>用户需要提供与其他样本不同的值，并将其作为参数传递。XGBoost在不同节点遇到缺失值时采用不同的处理方法，并且会学习未来遇到缺失值时的处理方法。</p>
-</li>
-<li><p><strong>树剪枝</strong><br>对于GBM，当节点在分裂时产生负loss，就会停止分裂。因此，它更像是一种贪婪算法。<br>XGBoost不同，它会先分裂到树的深度为“max_depth”（参数指定），然后回过头来剪枝，如果某个节点之后不再有正值，它会去除这个分裂。<br>另一个优点在于，假设GBM发现分裂产生负loss，如-2，可能接下来继续分列会产生+10的loss，这样的话因为负loss，GBM会提前停止分列，但XGBoost会继续分列，从而会发现-2和+10组合后还有+8的loss，因此两次分列都会保留。</p>
-</li>
-<li><p><strong>内置交叉验证</strong><br>XGBoost可以在每一轮boosting迭代的时候使用交叉验证。因此，可以方便获得最优boosting迭代的次数。<br>而GBM使用网格搜索，只能检测有限个值。</p>
-</li>
-<li><p><strong>在已有的模型基础上继续</strong><br>XGBoost可以在上一轮的结果上继续训练，这个特征在某些应用上是一个很大的优势。<br>sklearn中的GBM的实现也有这个功能，两种算法在这一点上是一致的。</p>
+<li><p>饭点儿-预购产品示意图：<br><img src="/img/Dynamic-Pricing/饭点儿3.png" alt="Alt text"></p>
 </li>
 </ul>
-<h2 id="XGBoost参数"><a href="#XGBoost参数" class="headerlink" title="XGBoost参数"></a>XGBoost参数</h2><hr>
+<h2 id="什么是动态定价？"><a href="#什么是动态定价？" class="headerlink" title="什么是动态定价？"></a>什么是动态定价？</h2><p>动态定价(Dynamic pricing)是指企业根据市场需求和自身供应能力，以不同的价格将同一产品适时地销售给不同的消费者或不同的细分市场，以实现收益最大化的策略。</p>
 <ul>
-<li><strong>通用参数</strong><br><strong>booster [默认=gbtree]：</strong><br>$\quad$ 选择每次迭代的基模型：gbtree(树模型)(通常用)、gbliner(线性模型)。<br><strong>silent [默认=0]：</strong><br>$\quad$ 设为1时，静态模式开启，不会有任何输出信息。<br>$\quad$ 所以一般都选择默认0，有助于通过输出信息理解模型。<br><strong>nthread [默认系统最大线程数]：</strong><br>$\quad$ 这个参数用来进行多线程控制，应当输入系统的核数。<br>$\quad$ 如果希望使用CPU全部的核，那就不要输入这个参数，算法会自动检测它。</li>
+<li><strong>基于时机定价策略</strong>：<br>关键在于把握顾客不同时间对价格承受的心理差异。<br>高峰负荷定价（peak-load pricing）：供不应求，供应缺乏弹性，应合理提价<br>清理定价（clearance pricing）：需求状况不确定、容易贬值，须降低价格，及时清理多余库存。</li>
+<li><strong>基于市场细分与限量配给策略</strong>：<br>根据不同的产品配置、渠道、客户类型和时间等，进行区别定价，如：航空公司。</li>
+<li><strong>基于动态推销策略</strong>:<br>利用互联网赋予的强大优势，根据供应和库存水平的变化，迅速、频繁地实施价格调整，为顾客提供不同的产品、各种促销优惠、多种交货方式以及差异化的产品定价。例如，在亚马逊购书，书店会根据消费记录，给与个性化的购书建议。</li>
+<li><strong>基于三种动态定价的综合运用</strong><br>在实际运用过程中，可酌情考虑单独实施某一策略，或进行策略组合。顾客价格承受心理差异性越强，市场需求的不确定因素越多，这些策略的价值及其作用也就越大。</li>
 </ul>
-<hr>
+<h2 id="好文解读-Customized-Regression-Model-for-Airbnb-Dynamic-Pricing"><a href="#好文解读-Customized-Regression-Model-for-Airbnb-Dynamic-Pricing" class="headerlink" title="好文解读-Customized Regression Model for Airbnb Dynamic Pricing"></a>好文解读-Customized Regression Model for Airbnb Dynamic Pricing</h2><blockquote>
+<p>文章来源：Peng Ye, Julian Qian, Jieying Chen, Chen-hung Wu, Yitong Zhou, Spencer De Mars, Frank Yang, and Li Zhang. 2018. Customized Regression Model for Airbnb Dynamic Pricing. In KDD ’18: The 24th ACM SIGKDD International Conference on Knowledge Discovery &amp; Data Mining, August 19–23, 2018, London, United Kingdom. ACM, New York, NY, USA, 9 pages. <a href="https://doi.org/10.1145/3219819.3219830" target="_blank" rel="noopener">https://doi.org/10.1145/3219819.3219830</a><br>Airbnb是一个用于共享住宿的在线平台，在这里寻求住宿的客人和有空余房间共享的主人可以完成在线匹配。</p>
+</blockquote>
+<p>本文详细介绍了Airbnb用于向房主提供建议价格的方法（房主最终仍然控制着Airbnb平台的定价）。提出的模型已在Airbnb部署生产超过1年。模型的第一次迭代的推出为预订价值带来了显著收益。</p>
+<h3 id="本文提出的方法"><a href="#本文提出的方法" class="headerlink" title="本文提出的方法"></a>本文提出的方法</h3><p>在理想情况下，为了使得利润最大化，我们一般会估计一个需求函数F(P), 即在给定价格P的情况下估计房间的需求量，之后选择P的值，使P×F(P)的值最大。但针对Airbnb需求函数不仅仅和价格有关，应该是F(P, t, id)，其中t是时间，id代表独立的房间。时间上因素上，需求受季节性和特殊事件的影响，以及预定早晚的影响。另外，Airbnb上房子各有不同，房子评分、浏览量等一些因素也导致需求函数的变化。而且，由于Airbnb并不是直接控制房间价格的，而是只能给出“建议价格”，所以想要直接拿不同的定价策略做实验来观察市场反应也是不容易的。</p>
+<p>Airbnb最终确定的定价系统有三个组成部分：</p>
 <ul>
-<li><strong>booster参数（ 尽管有两种booster可供选择，我这里只介绍tree booster，因为它的表现远远胜过linear booster，所以linear booster很少用到）</strong><br><strong>eta [默认=0.3]：</strong><br>$\quad$ 和GBM的学习率(learing rate)类似。<br>$\quad$ 通过减少每一步的权重，可以提高模型的鲁棒性。<br>$\quad$ 典型取值0.01~0.2。<br><strong>min_child_weight [默认=1]：</strong><br>$\quad$ 决定叶子节点样本权重之和的最小值。<br>$\quad$  和GBM的min_child_leaf类似，但不完全一致，XGBoost是最小样本权重和，GBM是最小样本数。<br>$\quad$ 控制模型过拟合，太大的值会阻碍模型学习局部样本之间的关系。<br>$\quad$ 因此值太大会导致欠拟合，需要通过交叉验证来学习。<br><strong>max_depth [默认=6]：</strong><br>$\quad$ 树的最大深度，和GBM一样。<br>$\quad$ 控制模型过拟合。值过大，会过度学习。<br>$\quad$ 需要通过交叉验证来学习。<br>$\quad$ 一般取值3~10。<br><strong>max_leaf_nodes：</strong><br>$\quad$ 树上最大叶子的数量。<br>$\quad$ 可以替代max_depth的作用。因为如果生成的是二叉树，一个深度为n的树最多生成n2个叶子。<br>$\quad$ 如果定义了这个参数，GBM会忽略max_depth参数。<br><strong>gamma[默认=0]：</strong><br>$\quad$ 在节点分裂时，只有分裂后损失函数的值下降了，才会分裂这个节点。Gamma指定了节点分裂所需的最小损失函数下降值。<br>$\quad$ 这个参数的值越大，算法越保守。这个参数的值和损失函数息息相关，所以是需要调参的。<br><strong>max_delta_step[默认=0]：</strong><br>$\quad$ 这参数限制每棵树权重改变的最大步长。如果这个参数的值为0，那就意味着没有约束。如果它被赋予了某个正值，那么它会让这个算法更加保守。<br>$\quad$ 通常，这个参数不需要设置。但是当各类别的样本十分不平衡时，它对逻辑回归是很有帮助的。<br>$\quad$ 这个参数一般用不到，但是你可以挖掘出来它更多的用处。<br><strong>subsample[默认=1]：</strong><br>$\quad$ 和GBM中的subsample参数一模一样。这个参数控制对于每棵树，随机采样的比例。<br>$\quad$ 减小这个参数的值，算法会更加保守，避免过拟合。但是，如果这个值设置得过小，它可能会导致欠拟合。<br>$\quad$ 典型值：0.5-1<br><strong>colsample_bytree[默认=1]：</strong><br>$\quad$ 和GBM里面的max_features参数类似。用来控制每棵树随机采样的列数的占比(每一列是一个特征)。<br>$\quad$ 典型值：0.5-1<br><strong>colsample_bylevel[默认=1]：</strong><br>$\quad$ 用来控制树的每一级的每一次分裂，对列数的采样的占比。<br>$\quad$ 一般不太用这个参数，因为subsample参数和colsample_bytree参数可以起到相同的作用。但是如果感兴趣，可以挖掘这个参数更多的用处。<br><strong>lambda[默认=1]：</strong><br>$\quad$ 权重的L2正则化项。(和Ridge regression类似)。<br>$\quad$ 这个参数是用来控制XGBoost的正则化部分的。虽然大部分数据科学家很少用到这个参数，但是这个参数在减少过拟合上还是可以挖掘出更多用处的。<br><strong>alpha[默认=1]：</strong><br>$\quad$ 权重的L1正则化项。(和Lasso regression类似)。<br>$\quad$ 可以应用在很高维度的情况下，使得算法的速度更快。<br><strong>scale_pos_weight[默认=1]：</strong><br>$\quad$ 在各类别样本十分不平衡时，把这个参数设定为一个正值，可以使算法更快收敛。</li>
+<li>首先构建一个基于Gradient Boosting Machine (GBM)的<strong>预定概率模型</strong>，用于预测某一晚某房间被预定的概率。</li>
+<li>然后这些预测结果会被作为特征输入到<strong>定价策略模型</strong>，对空闲日期提出建议价格。</li>
+<li>最终策略模型会加入其他个性化逻辑，以符合房东的目标、结合特殊事件等等。<br><img src="/img/Dynamic-Pricing/airbnb1.png" alt="Alt text"></li>
 </ul>
-<hr>
+<h3 id="预定概率模型"><a href="#预定概率模型" class="headerlink" title="预定概率模型"></a>预定概率模型</h3><p>想知道某间房会有多大概率被预定，这里是用的是Gradient Boosting Machines(GBM)模型，是一个二分类的问题。除了对全局样本通过GBM训练建模以外，也给每个市场训练单独的模型，训练数据的抽样率根据市场密度而变化，这些模型考虑了三种不同类型的特征：</p>
 <ul>
-<li><p><strong>学习目标参数</strong><br><strong>objective[默认=reg:linear]：</strong><br>$\quad$ binary:logistic，二分类的逻辑回归，返回预测的概率(不是类别)。<br>$\quad$ multi:softmax，使用softmax的多分类器，返回预测的类别(不是概率)。 在这种情况下，你还需要多设一个参数：num_class(类别数目)。<br>$\quad$ multi:softpro，和multi:softmax参数一样，但是返回的是每个数据属于各个类别的概率。<br><strong>eval_metric[默认值取决于objective参数的取值]：</strong><br>$\quad$ 对于有效数据的度量方法。<br>$\quad$ 对于回归问题，默认值是rmse，对于分类问题，默认值是error。<br>$\quad$ 典型值有： </p>
+<li>房屋属性特征：每晚的房价，房间类型，人数，卧室/浴室数量，设施，位置，评论，历史入住率，是否启用即时预订等</li>
+<li>时间特征：季节因素、可入住时长、预定早晚等。</li>
+<li>供给特征：周围房屋情况、浏览量、搜索率等。</li>
+</ul>
+<p>通过在一定范围内的不同价格点对预订概率模型进行评分，可以获得估计的需求曲线<br><img src="/img/Dynamic-Pricing/airbnb2.png" alt="Alt text"></p>
+<p>但是，由于上述的特征影响因素太多，想得到精确的需求曲线进行价格设置是非常困难的。主要的影响分三类：</p>
 <ul>
-<li>rmse：均方根误差</li>
-<li>mae：平均绝对误差</li>
-<li>logloss：负对数似然函数值</li>
-<li>error：二分类错误率(阈值为0.5)</li>
-<li>merror：多分类错误率</li>
-<li>mlogloss：多分类logloss损失函数</li>
-<li>auc：曲线下面积</li>
+<li>数据稀疏性：大部分房屋都不怎么会经常调整价格，而且变化基本都在一个小范围，因此难以获得比较偏的观察样本。</li>
+<li>样本唯一性：由于房屋的独特性，难以通过学习提高模型泛化性。</li>
+<li>特征共线性：不可避免，很多特征都和价格有关，比如搜索率、浏览量、预定占比等等</li>
 </ul>
-<p><strong>seed[默认=0]：</strong><br>$\quad$ 随机数的种子。<br>$\quad$ 设置它可以复现随机数据的结果，也可以用于调整参数。</p>
-</li>
-</ul>
-<hr>
+<blockquote>
+<p>尝试了直接应用利润最大化策略，但是A/B测试结果显示这些方法在实际中通常会失败。所以，我们决定找其他的替代方法。替代法使用预定概率模型的输出结果作为定价策略模型的输入因素之一。</p>
+</blockquote>
+<h3 id="定价策略模型"><a href="#定价策略模型" class="headerlink" title="定价策略模型"></a>定价策略模型</h3><p>首先让我们思考：在缺少最优价的基础上，训练定价策略模型时，应该用什么评估尺度呢？假设P为实际房间一晚的价格，Psug为建议价格，最优价格为P0（如果存在），我们认为以下情况Psug是不好的：</p>
 <ul>
-<li><p><strong>注意</strong>：<br>如果你之前用的是Scikit-learn，你可能不太熟悉这些参数。但是有个好消息，Python的XGBoost模块有一个sklearn包-XGBClassifier。这个包中的参数是按sklearn风格命名的，会改变的函数名:</p>
+<li>当房间被预定了且Psug &lt; P</li>
+<li>当房间没有被预定且Psug &gt;= P</li>
+</ul>
+<p>还有两种情况不能确定建议是好是坏：</p>
 <ul>
-<li>eta -&gt; learning_rate </li>
-<li>lambda -&gt; reg_lambda </li>
-<li>alpha -&gt; reg_alpha</li>
+<li>当房间被预定了且Psug &gt;= P</li>
+<li>当房间没有被预定且Psug &lt; P</li>
 </ul>
-<p>你肯定在疑惑为啥咱们没有介绍和GBM中的n_estimators类似的参数。XGBClassifier中确实有一个类似的参数，但在标准XGBoost实现调用拟合函数时，把它作为num_boosting_rounds参数传入。</p>
-</li>
-</ul>
-<h2 id="参数调优的一般方法"><a href="#参数调优的一般方法" class="headerlink" title="参数调优的一般方法"></a>参数调优的一般方法</h2><p>使用和GBM中相似的方法。需要进行如下步骤：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Item</th>
+<th style="text-align:right">Booking</th>
+<th style="text-align:center">Non-Booking</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Psug &gt;= P</td>
+<td style="text-align:right">a</td>
+<td style="text-align:center">b</td>
+</tr>
+<tr>
+<td style="text-align:left">Psug &lt; P</td>
+<td style="text-align:right">c</td>
+<td style="text-align:center">d</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>定义以下几种度量：</p>
 <ul>
-<li>选择较高的学习速率(learning_rate)。一般情况下，学习速率的值为0.1。但是，对于不同的问题，理想的学习速率有时候会在0.05到0.3之间波动。选择对应于此学习速率的理想决策树数量。XGBoost有一个很有用的函数“cv”，这个函数可以在每一次迭代中使用交叉验证，并返回理想的决策树数量。</li>
-<li>对于给定的学习速率和决策树数量，进行决策树特定参数调优(max_depth,min_child_weight, gamma,subsample,colsample_bytree)。在确定一棵树的过程中，我们可以选择不同的参数。</li>
-<li>xgboost的正则化参数的调优(lambda,alpha)。这些参数可以降低模型的复杂度，从而提高模型的表现。</li>
-<li>降低学习速率learning_rate，确定理想参数。</li>
+<li>Price Decrease Recall (PDR)：所有没有被预定的样本中，建议价格低于实际价格的比例<script type="math/tex; mode=display">PDR = \frac{d}{b + d}</script><img src="/img/Dynamic-Pricing/airbnb3.png" alt="Alt text"><br>如上图例子，PDR = 0.6</li>
+<li>Price Decrease Precision (PDP)：所有Psug &lt; P的样本中，没有被预定的房间比例<script type="math/tex; mode=display">PDP = \frac{d}{c + d}</script></li>
+<li>Price Increase Recall (PIR)：所有被预定的样本中，建议价格高于或等于实际价格的比例<script type="math/tex; mode=display">PIR = \frac{a}{a + c}</script></li>
+<li>Price Increase Precision (PIP)：所有Psug &gt;= P的样本中，被预定的房间比例<script type="math/tex; mode=display">PIP = \frac{a}{a + b}</script></li>
+<li>Booking Regret (BR)：预定反悔率，所有被预定的样本中，取零和预定价格与建议价格之间差的百分比之中的最大值，然后从这些值中取中位数<script type="math/tex; mode=display">BR = median_{bookings}(max(0, \frac{P - Psug}{P}))</script><img src="/img/Dynamic-Pricing/airbnb4.png" alt="Alt text"><br>如上例子，BR = Median(14%,5%, 6%, 0, 0) = 5%。本文采用PDR和BR两个度量作为评价指标。</li>
 </ul>
-<p><strong>第一步：</strong>确定学习速率和tree_based参数调优的决策树数量：</p>
+<h4 id="目标函数"><a href="#目标函数" class="headerlink" title="目标函数"></a>目标函数</h4><p>给定N个训练样本${xi, yi}_{i=1}^N$，其中，$xi$代表关于房间特征的输入，$yi$代表预定状态，1为预定，0为未预定。特征$xi$包含以下内容：</p>
 <ul>
-<li>其他参数初始化：<pre><code> 1. max_depth = 5：这个参数的取值最好在3-10之间。我选的起始值为5，但是你  也可以选择其它的值。起始值在4-6之间都是不错的选择。
- 2. min_child_weight = 1：在这里选了一个比较小的值，因为这是一个极不平衡的分类问题。因此，某些叶子节点下的值会比较小。
- 3. gamma = 0： 起始值也可以选其它比较小的值，在0.1到0.2之间就可以。这个参数后继也是要调整的。
- 4. subsample, colsample_bytree = 0.8：这个是最常见的初始值了。典型值的范围在0.5-0.9之间。
- 5. scale_pos_weight = 1：这个值是因为类别十分不平衡。 
- 6. 这里把学习速率就设成默认的0.1。然后用xgboost中的cv函数来确定最佳的决策树数量。
-</code></pre></li>
+<li>房主设定的价格$P_i$。</li>
+<li>上面预定概率模型得出的房间被预定的概率$q_i$</li>
+<li>市场需求信号：这有利于模型对市场动向做出及时反应。</li>
 </ul>
-<p><strong>第二步：</strong> max_depth 和 min_child_weight 参数调优<br><strong>第三步：</strong>gamma参数调优<br><strong>第四步：</strong>subsample 和 colsample_bytree调优<br><strong>第五步：</strong>正则化参数调优<br><strong>第六步：</strong>降低学习速率，使用更多的决策树</p>
-<hr>
-<p><strong>参考文献：</strong><br><a href="https://www.analyticsvidhya.com/blog/2016/03/complete-guide-parameter-tuning-xgboost-with-codes-python/" target="_blank" rel="noopener">https://www.analyticsvidhya.com/blog/2016/03/complete-guide-parameter-tuning-xgboost-with-codes-python/</a></p>
+<p>对于$xi$来说，建议价格定义为$f_\theta(xi)$，$\theta$为需要学习的参数集合，自定义的损失函数受启发于SVR中$\epsilon$-不敏感损失函数，虽然我们不知道真实的最优价格，但是可以根据实际情况定义一个合理价格的区间，认为最优价格应该落在其中。<br><img src="/img/Dynamic-Pricing/airbnb5.png" alt="Alt text"></p>
+<p>损失函数如下：</p>
+<script type="math/tex; mode=display">L = arg min_\theta \sum_{i=1}^N (L(P_i,y_i) - f_\theta(x_i))^+ +  (f_\theta(x_i) - U(P_i,y_i))^+</script><p>其中，“+” 表示 $max(0, \cdot)$，$L(P_i,y_i)$ 、$U(P_i,y_i)$分别表示最优价格区间的上界和下界，如果建议价格落在上界和下界之间，那么损失=0，否则，损失等于建议价格与界限的距离，上界和下界分别定义为：</p>
+<script type="math/tex; mode=display">L(P_i,y_i) = y_i \cdot P_i + (1 - y_i) \cdot c_1P_i</script><script type="math/tex; mode=display">U(P_i,y_i) = (1 - y_i) \cdot P_i + y_i \cdot c_2P_i</script><p>其中，$c_1 \in(0,1)$，$c_2 &gt; 1$，下图分别说明了损失函数在正负样本情况下的变化方向。<br><img src="/img/Dynamic-Pricing/airbnb6.png" alt="Alt text"></p>
+<p>对于正样本来说，当建议价格落在区间$(P_i, c_2P_i)$时，损失函数会降为0，与此同时预定反悔率BR也达到最小0。同样，对于负样本来说，当建议价格落在区间$(c_1P_i, P_i)$时，损失函数会降为0，与此同时PDR会很大因为建议价格比实际价格要低，这也正是模型想发展的方向。</p>
+<h4 id="需求增强定价法"><a href="#需求增强定价法" class="headerlink" title="需求增强定价法"></a>需求增强定价法</h4><p>本节着重给出建议价格的具体形式，模型的背后需要满足几个前提条件的：</p>
+<ul>
+<li>对于同一个房间，建议价格和被预定概率是正相关的，这样建议价格才能对概率的变化做出调整。</li>
+<li>建议价格往往是集中在房主喜欢设定的最有代表性的价格之间左右徘徊，通过学习增加/降低的力度去控制。</li>
+<li>预定概率模型捕捉不到的额外需求信号，应该加以关注。</li>
+</ul>
+<p>基于上述假设，引入一个非对称指数模型，通过样本数据学习对实际价格的增加/减少度，建议价格Psug表示如下：</p>
+<script type="math/tex; mode=display">Psug = P \cdot V</script><p>其中，增加/减少度V定义如下：</p>
+<script type="math/tex; mode=display">V =  \begin{cases}
+        1 + \theta_1(q^{\varphi_H^{-qD}} - \theta_2)  & \text{if $D$ > 0} \\
+        1 + \theta_1(q^{\varphi_L^{-(1-q)D}} - \theta_2)  & \text{if $D$ <= 0}
+        \end{cases}</script><ul>
+<li>P为房主设置的代表性价格（比如：历史被预定价格的中位数）。</li>
+<li>q为当价格为P时的预定概率模型得出的概率。</li>
+<li>D是根据簇集合的附加需求信号计算的需求分数（簇是一组类似的房间样本）。</li>
+<li>$\theta_1$控制价格增长/缩减的速度。</li>
+<li>$\theta_2$控制何时建议原始的价格</li>
+<li>$1 &lt; \varphi_L &lt; \varphi_H &lt; 2$ 是两个不同的常数，用于分别控制价格涨跌时需求曲线的弯曲程度，不同的常数希望模型训练能够非对称地去学习参数。</li>
+</ul>
+<p>另外，需求得分D是被归一化的，D值越高，相应簇集合的需求就越高，给定$\theta_1$和$\theta_2$，Psug随着预订概率q单调递增，这保证了我们建议对于预订量较高的夜晚提供更高的价格。<br><img src="/img/Dynamic-Pricing/airbnb7.png" alt="Alt text"></p>
+<p>通过对上式求导可知：</p>
+<script type="math/tex; mode=display">\frac{\partial V}{\partial \theta_1} = q^{\varphi_H^{-qD}} - \theta_2</script><script type="math/tex; mode=display">\frac{\partial V}{\partial \theta_2} = -\theta_1</script><p>该公式为参数学习提供了良好的型式，进而最终可以求出Psug。</p>
+<h4 id="模型训练"><a href="#模型训练" class="headerlink" title="模型训练"></a>模型训练</h4><ul>
+<li>样本层级的训练：Airbnb上的房间价格可能彼此不同，即使是属于同一类型和市场的房间。并且每个房间的最优策略也很大程度上受其自身属性和房主偏好的影响。所以，不像预定概率模型可以分区域训练，定价决策模型需要对每个房间样本单独进行训练，参数$\theta_1$和$\theta_2$是在Airbnb上400多万个有效房源中训练出的，训练更关注最近的预定行为，从而更好地反映季节信号。但同样会基于市场和全局去做训练，特别是当单个房间样本信息不足的时候，比如从来没有被预定过的房间。</li>
+<li>参数约束：引入参数约束来保证定价结果在合理的范围内<script type="math/tex; mode=display">l_1 <= \theta_1 <= \mu_1</script><script type="math/tex; mode=display">l_2 <= \theta_2 <= \mu_2</script>其中，$(l_1,l_2,\mu_1,\mu_2)$ 被作为一个箱子约束去控制参数的范围。比如，在真实实验中，会发现当$\theta_1$特别大时建议价格不稳定，$\theta_2$特别大时价格增长很小，这些情况都不是房主想看到的。<br>特别地，对于一些小需求的样本，可以有如下约束：<script type="math/tex; mode=display">a\theta_1 + b <= \theta_2 (a > 0)</script>意思是，当$\theta_1$特别大的时候，$\theta_2$也应该同比例放大，以限制高建议价格的产生频次。这些约束通常被视为故障保险和特殊情况处理机制，以避免出现提出不切实际的建议价格。</li>
+<li>算法+计算：Stochastic Gradient Descent（SGD），Spark</li>
+<li>训练样本</li>
+</ul>
+<h3 id="实验结果"><a href="#实验结果" class="headerlink" title="实验结果"></a>实验结果</h3><ul>
+<li>数据集采样：<br>ds：代表使用模型预测的日期（当前日期）<br>ds_eval：代表收集到预定标签状态的日期（未来日期）<br>ds_night：代表售卖日期<br>在ds与ds_eval期间，至少被预定了一次以及可待预定的房间视为正样本；一次都没有被预定且 ds_night &lt;= ds_eval的情况视为负样本。<br><img src="/img/Dynamic-Pricing/airbnb8.png" alt="Alt text"></li>
+</ul>
+<p>离线和在线评估结果表明，所提出的策略模型的性能明显优于直接最大回报定价策略，定价策略模型显著改善了PDR和BR。<br><img src="/img/Dynamic-Pricing/airbnb9.png" alt="Alt text"></p>
+<p>除了定量评估，论文作者还检查了2018年2月8日生成的未来120晚的价格，下图分别是针对日本东京和美国加州太浩湖的房源价格走势：<br>Tokyo：<br><img src="/img/Dynamic-Pricing/airbnb10.png" alt="Alt text"><br>Tahoe, CA：<br><img src="/img/Dynamic-Pricing/airbnb11.png" alt="Alt text"><br>可以看到，两地房间的价格都在周末有所上升，并且东京在三月末到四月初的房价也相对较高，因为那正是赏樱的好时节。“从这两个案例中，我们看到模型的确能捕捉到时间带来的房价波动”</p>
 
       
     </div>
@@ -521,9 +592,7 @@
   
         <div class="post-tags">
           
-            <a href="/tags/Algorithm/" rel="tag"># Algorithm</a>
-          
-            <a href="/tags/Parameter-Tuning/" rel="tag"># Parameter Tuning</a>
+            <a href="/tags/Dynamic-Pricing/" rel="tag"># Dynamic Pricing</a>
           
         </div>
       
@@ -574,8 +643,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/05/模型偏差与方差.html" rel="next" title="模型偏差与方差">
-                <i class="fa fa-chevron-left"></i> 模型偏差与方差
+              <a href="/2018/06/改进神经网络的学习方法-1.html" rel="next" title="改进神经网络的学习方法(1)">
+                <i class="fa fa-chevron-left"></i> 改进神经网络的学习方法(1)
               </a>
             
           </div>
@@ -583,10 +652,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/08/深度学习的基础-从人工神经网络开始.html" rel="prev" title="深度学习基础 - 从人工神经网络开始">
-                深度学习基础 - 从人工神经网络开始 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -772,7 +837,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#XGBoost算法的优点"><span class="nav-number">2.</span> <span class="nav-text">XGBoost算法的优点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#XGBoost参数"><span class="nav-number">3.</span> <span class="nav-text">XGBoost参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参数调优的一般方法"><span class="nav-number">4.</span> <span class="nav-text">参数调优的一般方法</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是动态定价？"><span class="nav-number">1.</span> <span class="nav-text">什么是动态定价？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#好文解读-Customized-Regression-Model-for-Airbnb-Dynamic-Pricing"><span class="nav-number">2.</span> <span class="nav-text">好文解读-Customized Regression Model for Airbnb Dynamic Pricing</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#本文提出的方法"><span class="nav-number">2.1.</span> <span class="nav-text">本文提出的方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#预定概率模型"><span class="nav-number">2.2.</span> <span class="nav-text">预定概率模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#定价策略模型"><span class="nav-number">2.3.</span> <span class="nav-text">定价策略模型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#目标函数"><span class="nav-number">2.3.1.</span> <span class="nav-text">目标函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#需求增强定价法"><span class="nav-number">2.3.2.</span> <span class="nav-text">需求增强定价法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#模型训练"><span class="nav-number">2.3.3.</span> <span class="nav-text">模型训练</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实验结果"><span class="nav-number">2.4.</span> <span class="nav-text">实验结果</span></a></li></ol></li></ol></div>
             
 
           </div>
